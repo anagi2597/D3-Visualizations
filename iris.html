@@ -11,10 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-    <!--*************************************-->
-    <!--**** IMPORT EXTERNAL Style Sheet ****-->
     <link rel="stylesheet" href="css/style.css">
-    <!--*************************************-->
 
 
     <!-- JavaScript -->
@@ -29,15 +26,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    
+    <!--*******************************************-->
+    <!--***** IMPORT EXTERNAL JAVASCRIPT CODE *****-->
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <script src="js/sample_visualization.js"></script>
+    <script src="js/barChart.js"></script>
+    <script src="js/scatter.js"></script>
+    <script src="js/groupedBarChart.js"></script>
+    <!--*******************************************-->
 
-
-    <title>CAP 4744/5745 - Interactive Data Visualization - Project 3</title>
+    <title>CAP 4744/5745 - Interactive Data Visualization - Project 2</title>
 
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="index.html">Project 3: Your Name</a>
+    <a class="navbar-brand" href="index.html">Project 2: Ayman Nagi</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -56,31 +61,37 @@
 <div class="page">
 
     <h1>CAP 4744/5745 - Interactive Data Visualization</h1>
-    <h2>Project 3: Iris Dataset</h2>
-    <h2>Your Name Here</h2>
+    <h2>Project 2: Iris Dataset</h2>
+    <h2>Ayman Nagi</h2>
 
-    <h3>Visualization 1: Visualization Type</h3>
+    <h3>Visualization 1: Univariate</h3>
     <div><svg id="vis_1" name="vis_1" class="default_svg"></svg></div>
     <div>
-        <p>Brief description of what the visualization is trying to show about the data.</p>
-        <p>Brief description of the visualization, encoding, and embellishment rationale.</p>
-        <p>Brief description of the interactions provided in the plot.</p>
+        <p>This visualization shows, out of all the data, how many speicies of Iris are included and how many of each species are included.</p>
+        <p>This graph encodes the count of each species included in the famous Iris dataset.
+         As a result of the few columns in the dataset and this being a univariate visual, there weren't many options to go with here. 
+         Instead of plotting one entry at a time and making the viewer count one-by-one, I decided to count the sum of the total amount of each species and scale the y-axis off of that.</p>
     </div>
 
-    <h3>Visualization 2: Visualization Type</h3>
+    <h3>Visualization 2: Bivariate</h3>
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
     <div>
-        <p>Brief description of what the visualization is trying to show about the data.</p>
-        <p>Brief description of the visualization, encoding, and embellishment rationale.</p>
-        <p>Brief description of the interactions provided in the plot.</p>
+        <p>This visualization plots an Iris species' sepal width versus its sepal length to make it easy to notice if there are any correlations between the two, for any of the three included Iris species. 
+        Taking a look at the graph, there seems to be only one species of Iris that may have a strong correlation between the two variables, that species being the Iris-setosa.</p>
+        <p>When I first plotted all three species' data, there was no way to draw any correlation since all points were the same color. 
+        As a result, this graph also encodes the specific species associated with each data point by inluding a unique color for each species type. 
+        The x and y axes are scaled off of the minimum and highest measurements to get rid of extra, uneeded white space in the visual.</p>
     </div>
 
-    <h3>Visualization 3: Visualization Type</h3>
+    <h3>Visualization 3: Easy Multivariate Visualizations</h3>
     <div><svg id="vis_3" name="vis_3" class="default_svg"></svg></div>
     <div>
-        <p>Brief description of what the visualization is trying to show about the data.</p>
-        <p>Brief description of the visualization, encoding, and embellishment rationale.</p>
-        <p>Brief description of the interactions provided in the plot.</p>
+        <p>This visual aims to show if specific Iris species have major differences in petal lengths and widths. 
+        This graph makes it easy to visualize the size difference between each of the three Iris species. </p>
+        <p>This graph encodes and groups a few things: Iris species, petal length, and petal width. 
+        To help distinguish between length and width, each measure has its own color and can be understood from the included legend in the upper left. 
+        Of course the viewer needs to also see which measurements belong to which species, so now below each grouping shows which species it belongs to.
+        Since there were so many entries of each, I decided to take the average petal lengths and widths and plot those which helped to clean up the data and make it more readable. </p>
     </div>
 
     <h3>Visualization 4: Visualization Type</h3>
@@ -88,7 +99,6 @@
     <div>
         <p>Brief description of what the visualization is trying to show about the data.</p>
         <p>Brief description of the visualization, encoding, and embellishment rationale.</p>
-        <p>Brief description of the interactions provided in the plot.</p>
     </div>
 
 </div>
@@ -97,6 +107,41 @@
 <script>
 
     /*** START CODE HERE ***/
+    let data = null;
+    let vis_1 = null;
+    let vis_2 = null;
+    let vis_3 = null;
+    let vis_4 = null;
+    
+    let xAxis = "";
+    let yAxis = "";
+    
+    d3.csv("data/iris.csv", (row, i) => {
+        return {
+            Species: row.Species,
+            Sepal_length: +row.Sepal_length,
+            Sepal_width: +row.Sepal_width,
+            Petal_length: +row.Petal_length,
+            Petal_width: +row.Petal_width,
+        };
+    }).then(rows => {
+        xAxis = "Species"
+        data = rows;
+
+        vis_1 = irisBarChart("#vis_1",data,xAxis)
+
+        xAxis = "Sepal_length"
+        yAxis = "Sepal_width"
+        vis_2 = scatterPlot("#vis_2", data, xAxis, yAxis)
+
+        xAxis = "Species"
+        let group1 = "Petal_length"
+        let group2 = "Petal_width"
+        vis_3 = groupedBarChart("#vis_3", data, xAxis, group1, group2)
+    
+    }).catch(error => {
+        console.log(error);
+    });
 
 </script>
 
