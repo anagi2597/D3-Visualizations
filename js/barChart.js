@@ -1,4 +1,4 @@
-function irisBarChart(svg_name, data, x_field) {
+function irisStackedBarChart(svg_name, data, x_field) {
 
 	// General Variables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
@@ -29,9 +29,9 @@ function irisBarChart(svg_name, data, x_field) {
 
 	// Variables to plot
 	myMap = [
-		{ Species: "Iris-setosa", "Petal_length": 0, "Sepal_length": 0},
-		{ Species: "Iris-versicolor", "Petal_length": 0, "Sepal_length": 0},
-		{ Species: "Iris-virginica", "Petal_length": 0, "Sepal_length": 0}
+		{ Species: "Iris-setosa", "Petal_length": 0, "Sepal_length": 0 },
+		{ Species: "Iris-versicolor", "Petal_length": 0, "Sepal_length": 0 },
+		{ Species: "Iris-virginica", "Petal_length": 0, "Sepal_length": 0 }
 	]
 
 	// Get average petal length and widths, fill myMap var
@@ -112,12 +112,18 @@ function irisBarChart(svg_name, data, x_field) {
 
 
 	// Add title
-	let title = "Petal and Sepal Length by Species";
+	let title = "Average Petal and Sepal Lengths by Species";
 	g.append('text')
 		.attr('class', 'title')
 		.attr('y', -15)
 		.attr('x', innerWidth / 2 - 100)
 		.text(title);
+
+	// Add Legend
+	g.append("circle").attr("cx", 85).attr("cy", 15).attr("r", 6).style("fill", "blue")
+	g.append("circle").attr("cx", 85).attr("cy", 40).attr("r", 6).style("fill", "green")
+	g.append("text").attr("x", 95).attr("y", 15).text("Petal Length").style("font-size", "15px").attr("alignment-baseline", "middle")
+	g.append("text").attr("x", 95).attr("y", 40).text("Sepal Length").style("font-size", "15px").attr("alignment-baseline", "middle")
 
 	// return chart data that can be used later
 	return {
