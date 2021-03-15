@@ -8,33 +8,63 @@ function irisBarChart(svg_name, data, x_field) {
 	const innerWidth = chart_width - margin.left - margin.right;
 	const innerHeight = chart_height - margin.top - margin.bottom;
 
-	function sumSpecies(data){
-		let map = {"Iris-setosa": 0, "Iris-versicolor": 0, "Iris-virginica": 0}
-		for(const index of data){
-			if(index[x_field] == "Iris-setosa"){
-				map["Iris-setosa"] += 1
-			}
-			else if(index[x_field] == "Iris-versicolor"){
-				map["Iris-versicolor"] += 1
-			}
-			else{
-				map["Iris-virginica"] += 1
+	// To get average petal lengths and widths
+	function avglengths(data, species) {
+		let avgSlen = 0
+		let avgPLen = 0
+		let count = 0
+		for (const index of data) {
+			if (index.Species == species) {
+				avgPLen += index["Petal_length"]
+				avgSlen += index["Sepal_length"]
+				count += 1
 			}
 		}
-		return map
+
+		avgPLen /= count;
+		avgSlen /= count;
+
+		return [avgPLen.toFixed(2), avgSlen.toFixed(2)];
 	}
 
-	let d1 = sumSpecies(data)
+	// Variables to plot
+	myMap = [
+		{ Species: "Iris-setosa", "Petal_length": 0, "Sepal_length": 0},
+		{ Species: "Iris-versicolor", "Petal_length": 0, "Sepal_length": 0},
+		{ Species: "Iris-virginica", "Petal_length": 0, "Sepal_length": 0}
+	]
+
+	// Get average petal length and widths, fill myMap var
+	let i = 1;
+	for (const index of myMap) {
+		let lens = avglengths(data, index.Species)
+		index.Petal_length = lens[0]
+		index.Sepal_length = lens[0]
+	}
+
+
+	//let d1 = sumSpecies(data)
 	// x position scale
 	let x = d3.scaleBand()
-		.domain(data.map(d => d[x_field]))
+		.domain(myMap.map(d => d[x_field]))
 		.range([0, innerWidth])
 		.padding(0.2);
 
 	// y position scale
 	let y = d3.scaleLinear()
-		.domain([0, 75])
-		.range([innerHeight, 0]); 
+		.domain([0, 15])
+		.range([innerHeight, 0]);
+
+	// Groups length and width seperately to go with each species
+	let subGroup = d3.scaleBand()
+		.domain(["Sepal_length", "Petal_length"])
+		.range([0, x.bandwidth()])
+		.padding(0.2)
+
+	// Change color based on length or width
+	let color = d3.scaleOrdinal()
+		.domain(subGroup.domain())
+		.range(["green", "blue"])
 
 	// Axes
 	const g = chart.append('g')
@@ -49,7 +79,7 @@ function irisBarChart(svg_name, data, x_field) {
 		.attr('fill', 'black')
 		.attr('transform', `rotate(-90)`)
 		.attr('text-anchor', 'middle')
-		.text("Count")
+		.text("Sepal/Petal Length (cm)")
 		.style("font-size", 15);
 
 	// X Axis
@@ -64,22 +94,29 @@ function irisBarChart(svg_name, data, x_field) {
 		.text(x_field)
 		.style("font-size", 15);
 
+	let keys = ["Petal_length", "Sepal_length"]
+
 	// generate points
-	let points = g.selectAll("rect")
-		.data(data).enter()
-		.append("rect")
+	let points = g.append("g")
+		.selectAll("g")
+		.data(d3.stack().keys(keys)(myMap))
+		.enter().append("g")
+		.attr("fill", function (d) { return color(d.key); })
+		.selectAll("rect")
+		.data(function (d) { return d; })
+		.enter().append("rect")
+		.attr("x", function (d) { return x(d.data["Species"]); })
+		.attr("y", function (d) { return y(d[1]); })
+		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
-		.attr("height", function (d) { return innerHeight - y(d1[d[x_field]]) })
-		.attr("x", d => x(d[x_field]))
-		.attr("y", d => y(d1[d[x_field]]))
-		.attr("fill", "#add8e6")
+
 
 	// Add title
-	let title = "Count of Each Flower by Species";
+	let title = "Petal and Sepal Length by Species";
 	g.append('text')
 		.attr('class', 'title')
 		.attr('y', -15)
-		.attr('x', innerWidth / 2 - 50)
+		.attr('x', innerWidth / 2 - 100)
 		.text(title);
 
 	// return chart data that can be used later
@@ -102,17 +139,17 @@ function titanicBarChart(svg_name, data, x_field) {
 	let chart_height = $(svg_name).height();
 	const innerWidth = chart_width - margin.left - margin.right;
 	const innerHeight = chart_height - margin.top - margin.bottom;
-	
+
 	// x position scale
 	let x = d3.scaleBand()
-		.domain(data.map(function(d,i){ return i; }))
+		.domain(data.map(function (d, i) { return i; }))
 		.range([0, innerWidth])
 		.padding(0.1);
 
 	// y position scale
 	let y = d3.scaleLinear()
-		.domain(d3.extent(data,function(d){ return d[x_field]; }))
-		.range([innerHeight, 0]); 
+		.domain(d3.extent(data, function (d) { return d[x_field]; }))
+		.range([innerHeight, 0]);
 
 	// Axes
 	const g = chart.append('g')
@@ -147,9 +184,9 @@ function titanicBarChart(svg_name, data, x_field) {
 		.data(data).enter()
 		.append("rect")
 		.attr("width", x.bandwidth())
-		.attr("height", function(d){ return innerHeight - y(d[x_field]); })
-		.attr("x", function(d,i){ return x(i); })
-		.attr("y", function(d){ return y(d[x_field]); })
+		.attr("height", function (d) { return innerHeight - y(d[x_field]); })
+		.attr("x", function (d, i) { return x(i); })
+		.attr("y", function (d) { return y(d[x_field]); })
 		.attr("fill", "#0000be")
 
 	// Add title
@@ -180,7 +217,7 @@ function titanicBarChart(svg_name, data, x_field) {
  * 
 *******************************************************************************/
 
-// Summed Fare on y axis vs Survived(y/n) on x axis to get plot sum of fares from total survived and died (not used)
+// Summed Fare on y axis vs Survived(y/n) on x axis to get plot sum of fares from total survived and died
 function Old_titanicBarChart(svg_name, data, x_field, y_field) {
 
 	// General Variables
@@ -277,7 +314,7 @@ function Old_titanicBarChart(svg_name, data, x_field, y_field) {
 				return y(sSum)
 			}
 		})
-		//.attr("y", d => y(d[y_field]))
+	//.attr("y", d => y(d[y_field]))
 
 	// Add Title
 	let title = x_field.charAt(0).toUpperCase() + x_field.slice(1) + " vs. " + y_field.charAt(0).toUpperCase() + y_field.slice(1);

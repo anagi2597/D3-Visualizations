@@ -36,13 +36,13 @@
     <script src="js/groupedBarChart.js"></script>
     <!--*******************************************-->
 
-    <title>CAP 4744/5745 - Interactive Data Visualization - Project 2</title>
+    <title>CAP 4744/5745 - Interactive Data Visualization - Project 3</title>
 
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="index.html">Project 2: Ayman Nagi</a>
+    <a class="navbar-brand" href="index.html">Project 3: Ayman Nagi</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -61,7 +61,7 @@
 <div class="page">
 
     <h1>CAP 4744/5745 - Interactive Data Visualization</h1>
-    <h2>Project 2: Iris Dataset</h2>
+    <h2>Project 3: Iris Dataset</h2>
     <h2>Ayman Nagi</h2>
 
     <h3>Visualization 1: Univariate</h3>
@@ -94,13 +94,6 @@
         Since there were so many entries of each, I decided to take the average petal lengths and widths and plot those which helped to clean up the data and make it more readable. </p>
     </div>
 
-    <h3>Visualization 4: Visualization Type</h3>
-    <div><svg id="vis_4" name="vis_4" class="default_svg"></svg></div>
-    <div>
-        <p>Brief description of what the visualization is trying to show about the data.</p>
-        <p>Brief description of the visualization, encoding, and embellishment rationale.</p>
-    </div>
-
 </div>
 
 
@@ -126,17 +119,19 @@
         };
     }).then(rows => {
         xAxis = "Species"
+        let group1 = "Petal_length"
+        let group2 = "Sepal_length"
         data = rows;
 
-        vis_1 = irisBarChart("#vis_1",data,xAxis)
+        vis_1 = irisBarChart("#vis_1",data, xAxis, group1, group2)
 
         xAxis = "Sepal_length"
         yAxis = "Sepal_width"
         vis_2 = scatterPlot("#vis_2", data, xAxis, yAxis)
 
         xAxis = "Species"
-        let group1 = "Petal_length"
-        let group2 = "Petal_width"
+        group1 = "Petal_length"
+        group2 = "Petal_width"
         vis_3 = groupedBarChart("#vis_3", data, xAxis, group1, group2)
     
     }).catch(error => {
