@@ -95,24 +95,37 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.style("font-size", 15);
 
 	let keys = ["Petal_length", "Sepal_length"]
-
-	// Prep the tooltip bits, initial display is hidden
-	let tooltip = chart.append("g")
+	// ----------------
+	// Create a tooltip
+	// ----------------
+	var tooltip = d3.select("#my_dataviz")
+		.append("div")
+		.style("opacity", 0)
 		.attr("class", "tooltip")
-		.style("display", "none");
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "1px")
+		.style("border-radius", "5px")
+		.style("padding", "10px")
 
-	tooltip.append("rect")
-		.attr("width", 60)
-		.attr("height", 20)
-		.attr("fill", "white")
-		.style("opacity", 0.5);
+	// Three function that change the tooltip when user hover / move / leave a cell
+	var mouseover = function (d) {
+		var subgroupName = d3.select(this.parentNode).datum().key;
+		var subgroupValue = d.data[subgroupName];
+		tooltip
+			.html("subgroup: " + subgroupName + "<br>" + "Value: " + subgroupValue)
+			.style("opacity", 1)
+	}
+	var mousemove = function (d) {
+		tooltip
+			.style("left", (d3.mouse(this)[0] + 90) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+			.style("top", (d3.mouse(this)[1]) + "px")
+	}
+	var mouseleave = function (d) {
+		tooltip
+			.style("opacity", 0)
+	}
 
-	tooltip.append("text")
-		.attr("x", 30)
-		.attr("dy", "1.2em")
-		.style("text-anchor", "middle")
-		.attr("font-size", "12px")
-		.attr("font-weight", "bold");
 
 	// generate points
 	let points = g.append("g")
@@ -127,15 +140,25 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.attr("y", function (d) { return y(d[1]); })
 		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
-		.on("mouseover", function() { tooltip.style("display", null); })
-		.on("mouseout", function() { tooltip.style("display", "none"); })
-		.on("mousemove", function(d) {
-		  console.log(d);
-		  var xPosition = d3.mouse(this)[0] - 5;
-		  var yPosition = d3.mouse(this)[1] - 5;
-		  tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-		  tooltip.select("text").text(d[1]-d[0]);
-		});
+		.on('click', function (d, i) {
+			d3.select(this)
+				.transition()
+				.attr('fill', 'black');
+		})
+		.on('mouseover', function (d, i) {
+			d3.select(this)
+				.attr('fill', '#ff0000');
+		})
+		.on('mouseout', function (d, i) {
+			console.log("mouseout", d);
+			d3.select(this)
+				.attr('fill', 'black');
+		})
+
+
+	// .on("mouseover", mouseover)
+	// .on("mousemove", mousemove)
+	// .on("mouseleave", mouseleave)
 
 
 	// Add title
