@@ -1,6 +1,6 @@
 function irisStackedBarChart(svg_name, data, x_field) {
 
-	// General Variables
+	// General letiables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
 	let chart = d3.select(svg_name).append("svg")
 	let chart_width = $(svg_name).width();
@@ -27,14 +27,14 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		return [avgPLen.toFixed(2), avgSlen.toFixed(2)];
 	}
 
-	// Variables to plot
+	// letiables to plot
 	myMap = [
 		{ Species: "Iris-setosa", "Petal_length": 0, "Sepal_length": 0 },
 		{ Species: "Iris-versicolor", "Petal_length": 0, "Sepal_length": 0 },
 		{ Species: "Iris-virginica", "Petal_length": 0, "Sepal_length": 0 }
 	]
 
-	// Get average petal length and widths, fill myMap var
+	// Get average petal length and widths, fill myMap let
 	let i = 1;
 	for (const index of myMap) {
 		let lens = avglengths(data, index.Species)
@@ -96,6 +96,24 @@ function irisStackedBarChart(svg_name, data, x_field) {
 
 	let keys = ["Petal_length", "Sepal_length"]
 
+	// Prep the tooltip bits, initial display is hidden
+	let tooltip = chart.append("g")
+		.attr("class", "tooltip")
+		.style("display", "none");
+
+	tooltip.append("rect")
+		.attr("width", 60)
+		.attr("height", 20)
+		.attr("fill", "white")
+		.style("opacity", 0.5);
+
+	tooltip.append("text")
+		.attr("x", 30)
+		.attr("dy", "1.2em")
+		.style("text-anchor", "middle")
+		.attr("font-size", "12px")
+		.attr("font-weight", "bold");
+
 	// generate points
 	let points = g.append("g")
 		.selectAll("g")
@@ -109,6 +127,15 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.attr("y", function (d) { return y(d[1]); })
 		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
+		.on("mouseover", function() { tooltip.style("display", null); })
+		.on("mouseout", function() { tooltip.style("display", "none"); })
+		.on("mousemove", function(d) {
+		  console.log(d);
+		  var xPosition = d3.mouse(this)[0] - 5;
+		  var yPosition = d3.mouse(this)[1] - 5;
+		  tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+		  tooltip.select("text").text(d[1]-d[0]);
+		});
 
 
 	// Add title
@@ -125,6 +152,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 	g.append("text").attr("x", 95).attr("y", 15).text("Petal Length").style("font-size", "15px").attr("alignment-baseline", "middle")
 	g.append("text").attr("x", 95).attr("y", 40).text("Sepal Length").style("font-size", "15px").attr("alignment-baseline", "middle")
 
+
 	// return chart data that can be used later
 	return {
 		chart: chart,
@@ -138,7 +166,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 
 function titanicBarChart(svg_name, data, x_field) {
 
-	// General Variables
+	// General letiables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
 	let chart = d3.select(svg_name).append("svg")
 	let chart_width = $(svg_name).width();
@@ -219,14 +247,14 @@ function titanicBarChart(svg_name, data, x_field) {
 
 
 /****************************************************************************** 
- * 	Old bar chart was bivariate, not univariate. Function below is not used
+ * 	Old bar chart was biletiate, not uniletiate. Function below is not used
  * 
 *******************************************************************************/
 
 // Summed Fare on y axis vs Survived(y/n) on x axis to get plot sum of fares from total survived and died
 function Old_titanicBarChart(svg_name, data, x_field, y_field) {
 
-	// General Variables
+	// General letiables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
 	let chart = d3.select(svg_name).append("svg")
 	let chart_width = $(svg_name).width();
