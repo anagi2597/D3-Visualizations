@@ -29,6 +29,7 @@
     
     <!--*******************************************-->
     <!--***** IMPORT EXTERNAL JAVASCRIPT CODE *****-->
+    <script src="https://d3js.org/d3.v6.js"></script>
     <script src="https://d3js.org/d3-array.v2.min.js"></script>
     <script src="js/sample_visualization.js"></script>
     <script src="js/barChart.js"></script>
@@ -123,7 +124,6 @@
         let group2 = "Sepal_length"
         data = rows;
 
-        console.log(data);
         vis_1 = irisStackedBarChart("#vis_1",data, xAxis)
 
         xAxis = "Sepal_length"

@@ -49,7 +49,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		index.Sepal_length = lens[1]
 	}
 
-	console.log(myMap);
+	//console.log(myMap);
 	//let d1 = sumSpecies(data)
 	// x position scale
 	let x = d3.scaleBand()
@@ -125,7 +125,8 @@ function irisStackedBarChart(svg_name, data, x_field) {
 	function onMouseOver(d, i) {
 		d3.select(this).style("opacity", "0.85");
 
-		g.append("text")
+		g
+		.append("text")
 			.attr('class', 'val')
 			.html(function () {
 				let value = d[1] - d[0];

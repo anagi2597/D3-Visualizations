@@ -69,7 +69,7 @@ function groupedBarChart(svg_name, data, x_field, group1, group2) {
 
     // Change color based on length or width
     let color = d3.scaleOrdinal()
-        .domain(subGroup)
+        .domain(["Petal_width", "Petal_length"])
         .range(["green", "blue"])
 
     // Axes
@@ -122,8 +122,14 @@ function groupedBarChart(svg_name, data, x_field, group1, group2) {
         .attr("x", function (d) { return subGroup(d.value1); })
         .attr("y", function (d) { return y(d.value); })
         .attr("width", subGroup.bandwidth())
-        .attr("height", function (d) { return innerHeight - y(d.value); })
-        .attr("fill", function (d) { return color(d.value); });
+        .attr("height", function (d) { 
+            if(d.value == undefined)
+                return 0; 
+            else
+                return  innerHeight - y(d.value); 
+        })
+        .attr("length", 0)
+        .attr("fill", function (d) { return color(d.value1); });
 
     // Add title
     let title = "Average Petal Width and Petal Length by Species";
