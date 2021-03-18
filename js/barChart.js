@@ -1,3 +1,10 @@
+// Helper function to bring a selcted object to the front of the display
+d3.selection.prototype.moveToFront = function () {
+	return this.each(function () {
+		this.parentNode.appendChild(this);
+	});
+};
+
 function irisStackedBarChart(svg_name, data, x_field) {
 
 	// General letiables
@@ -39,10 +46,10 @@ function irisStackedBarChart(svg_name, data, x_field) {
 	for (const index of myMap) {
 		let lens = avglengths(data, index.Species)
 		index.Petal_length = lens[0]
-		index.Sepal_length = lens[0]
+		index.Sepal_length = lens[1]
 	}
 
-
+	console.log(myMap);
 	//let d1 = sumSpecies(data)
 	// x position scale
 	let x = d3.scaleBand()
@@ -95,37 +102,6 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.style("font-size", 15);
 
 	let keys = ["Petal_length", "Sepal_length"]
-	// ----------------
-	// Create a tooltip
-	// ----------------
-	var tooltip = d3.select("#my_dataviz")
-		.append("div")
-		.style("opacity", 0)
-		.attr("class", "tooltip")
-		.style("background-color", "white")
-		.style("border", "solid")
-		.style("border-width", "1px")
-		.style("border-radius", "5px")
-		.style("padding", "10px")
-
-	// Three function that change the tooltip when user hover / move / leave a cell
-	var mouseover = function (d) {
-		var subgroupName = d3.select(this.parentNode).datum().key;
-		var subgroupValue = d.data[subgroupName];
-		tooltip
-			.html("subgroup: " + subgroupName + "<br>" + "Value: " + subgroupValue)
-			.style("opacity", 1)
-	}
-	var mousemove = function (d) {
-		tooltip
-			.style("left", (d3.mouse(this)[0] + 90) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-			.style("top", (d3.mouse(this)[1]) + "px")
-	}
-	var mouseleave = function (d) {
-		tooltip
-			.style("opacity", 0)
-	}
-
 
 	// generate points
 	let points = g.append("g")
@@ -136,30 +112,60 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.selectAll("rect")
 		.data(function (d) { return d; })
 		.enter().append("rect")
+		.on("mouseover", onMouseOver)
+		.on("mousemove", onMouseMove)
+		.on("mouseout", onMouseOut)
 		.attr("x", function (d) { return x(d.data["Species"]); })
 		.attr("y", function (d) { return y(d[1]); })
 		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
-		.on('click', function (d, i) {
-			d3.select(this)
-				.transition()
-				.attr('fill', 'black');
-		})
-		.on('mouseover', function (d, i) {
-			d3.select(this)
-				.attr('fill', '#ff0000');
-		})
-		.on('mouseout', function (d, i) {
-			console.log("mouseout", d);
-			d3.select(this)
-				.attr('fill', 'black');
-		})
+		.transition()
+		.duration(400)
 
+	function onMouseOver(d, i) {
+		d3.select(this).style("opacity", "0.85");
 
-	// .on("mouseover", mouseover)
-	// .on("mousemove", mousemove)
-	// .on("mouseleave", mouseleave)
+		g.append("text")
+			.attr('class', 'val')
+			.html(function () {
+				let value = d[1] - d[0];
+				value = value.toFixed(2);
+				value = value.toString();
+				return ['$' + value];
+			})
+			.attr('x', function() {
+				return x(d.data["Species"]) -10;
+			})
+			.attr('y', function() {
+				return y(d[1]) - 15;
+			})
+			.moveToFront()
+	}
 
+	function onMouseMove(d, i) {
+		g.append("text")
+			.attr('class', 'val')
+			.html(function () {
+				let value = d[1] - d[0];
+				value = value.toFixed(2);
+				value = value.toString();
+				return ['$' + value];
+			})
+			.attr('x', function() {
+				return x(d.data["Species"]) -10;
+			})
+			.attr('y', function() {
+				return y(d[1]) - 15;
+			})
+			.moveToFront()
+	  }
+
+	function onMouseOut(d, i) {
+		d3.select(this).style("opacity", "1");
+
+		d3.selectAll('.val')
+			.remove()
+	}
 
 	// Add title
 	let title = "Average Petal and Sepal Lengths by Species";

@@ -27,6 +27,11 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
+    <!--*******************************************-->
+    <!--***** IMPORT EXTERNAL JAVASCRIPT CODE *****-->
+    <script src="https://d3js.org/d3-array.v2.min.js"></script>
+    <script src="js/sample_visualization.js"></script>
+    <!--*******************************************-->
 
     <title>CAP 4744/5745 - Interactive Data Visualization - Project 3</title>
 
@@ -88,6 +93,28 @@
 <script>
 
     /*** START CODE HERE ***/
+    let vis_1 = null;
+    let yAxis = "";
+    
+    d3.csv("data/iris.csv", (row, i) => {
+        return {
+            Species: row.Species,
+            Sepal_length: +row.Sepal_length,
+            Sepal_width: +row.Sepal_width,
+            Petal_length: +row.Petal_length,
+            Petal_width: +row.Petal_width,
+        };
+    }).then(rows => {
+        xAxis = "Species"
+        let group1 = "Petal_length"
+        let group2 = "Sepal_length"
+        data = rows;
+
+        vis_1 =  load_sample_visualization("#vis_1",data, group1)
+    
+    }).catch(error => {
+        console.log(error);
+    });
 
 </script>
 
