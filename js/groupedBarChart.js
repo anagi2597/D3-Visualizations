@@ -154,6 +154,7 @@ function groupedBarChart(svg_name, data, x_field) {
         .on("mouseover", onMouseOver)
         .on("mousemove", onMouseMove)
 		.on("mouseleave", onMouseOut)
+        .on("click", onClick)
 
 	function onMouseOver(d, i) {
 		d3.select(this).style("opacity", "0.85");
@@ -189,10 +190,21 @@ function groupedBarChart(svg_name, data, x_field) {
 	function onMouseOut(d, i) {
 		d3.select(this).attr("opacity", "1");
 
-		d3.selectAll('.val')
-			.remove()
+		d3.selectAll('.val').remove();
+
+        d3.selectAll(".box"). remove();
 	}
 
+    function onClick(d, i){
+        console.log("clicked", d);
+        g.append("text")
+			.attr('class', 'box')
+			.html(function () {
+				return [d.min];
+			})
+			.attr('x', 50)
+			.attr('y', 50)
+    }
     // Add title
     let title = "Average Petal Width and Petal Length by Species";
     g.append('text')
