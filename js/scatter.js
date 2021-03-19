@@ -1,3 +1,10 @@
+// Helper function to bring a selcted object to the front of the display
+d3.selection.prototype.moveToFront = function () {
+    return this.each(function () {
+        this.parentNode.appendChild(this);
+    });
+};
+
 function scatterPlot(svg_name, data, x_field, y_field) {
     var svg = d3.select(svg_name);
     svg.selectAll("*").remove();
@@ -69,6 +76,47 @@ function scatterPlot(svg_name, data, x_field, y_field) {
             else
                 return "pink"
         })
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");
@@ -174,6 +222,47 @@ function scatterVersicolor(svg_name, data, x_field, y_field) {
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
         .style("fill", "blue")
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");
@@ -268,6 +357,47 @@ function scatterVirginica(svg_name, data, x_field, y_field) {
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
         .style("fill", "green")
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");
@@ -293,6 +423,7 @@ function scatterVirginica(svg_name, data, x_field, y_field) {
         points: points
     }
 }
+
 function scatterSetosa(svg_name, data, x_field, y_field) {
     var svg = d3.select(svg_name);
     svg.selectAll("*").remove();
@@ -361,6 +492,47 @@ function scatterSetosa(svg_name, data, x_field, y_field) {
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
         .style("fill", "red")
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");
@@ -455,6 +627,47 @@ function malePlot(svg_name, data, x_field, y_field) {
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
         .style("fill", "blue")
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");
@@ -547,6 +760,47 @@ function femalePlot(svg_name, data, x_field, y_field) {
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
         .style("fill", "pink")
+        .on("mouseover", onMouseOver)
+        .on("mouseout", onMouseOut);
+
+    function onMouseOver(d, i) {
+        d3.select(this)
+            .attr("r", 10)
+            .attr("stroke-width", "3px")
+            .attr("fill-opacity", 0.85)
+            .moveToFront();
+
+        console.log("over", d);
+        g.append("text")
+            .attr('class', 'val')
+            .html(function () {
+                let xVal = d[x_field];
+                xVal = xVal.toFixed(2);
+                xVal = xVal.toString();
+
+                let yVal = d[y_field];
+                yVal = yVal.toFixed(2);
+                yVal = yVal.toString();
+
+                return [xVal + ', ' + yVal];
+            })
+            .attr('x', function () {
+                return x(d[x_field]) - 10;
+            })
+            .attr('y', function () {
+                return y(d[y_field]) - 15;
+            })
+    }
+
+    function onMouseOut(d, i) {
+        d3.select(this)
+            .attr("r", 5)
+            .attr("fill-opacity", 1)
+            .attr("stroke-width", "0px");
+
+        d3.selectAll('.val')
+            .remove()
+    }
 
     // Add Title
     let title = x_field.replace("_", " ") + " vs. " + y_field.replace("_", " ");

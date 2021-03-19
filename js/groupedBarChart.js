@@ -1,3 +1,5 @@
+//const { min } = require("d3-array");
+
 function groupedBarChart(svg_name, data, x_field) {
 
     // General Variables
@@ -7,14 +9,25 @@ function groupedBarChart(svg_name, data, x_field) {
     let chart_height = $(svg_name).height();
     const innerWidth = chart_width - margin.left - margin.right;
     const innerHeight = chart_height - margin.top - margin.bottom;
-
+    
     // To get average petal lengths and widths
     function avglengths(data, species) {
         let avgPWidth = 0
         let avgPLen = 0
         let count = 0
+        let maxL = 0, maxW = 0, minL = data[1].Petal_length, minW = data[1].Petal_width;
         for (const index of data) {
             if (index.Species == species) {
+                if(index["Petal_length"] > maxL)
+                    maxL = index["Petal_length"]
+                else if(index["Petal_length"] < minL)
+                    minL = index["Petal_length"]
+                
+                if(index["Petal_width"] > maxW)
+                    maxW = index["Petal_width"]
+                if(index["Petal_width"] < minW)
+                    minW = index["Petal_width"]
+                
                 avgPLen += index["Petal_length"]
                 avgPWidth += index["Petal_width"]
                 count += 1
@@ -24,18 +37,20 @@ function groupedBarChart(svg_name, data, x_field) {
         avgPLen /= count;
         avgPWidth /= count;
 
-        return [avgPLen.toFixed(2), avgPWidth.toFixed(2)];
+        console.log([avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW]);
+        return [avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW];
     }
 
     // Variables to plot
     myMap = [
-        { Species: "Iris-setosa", "Petal_length": 0 },
-        { Species: "Iris-setosa", "Petal_width": 0 },
-        { Species: "Iris-versicolor", "Petal_length": 0 },
-        { Species: "Iris-versicolor", "Petal_width": 0 },
-        { Species: "Iris-virginica", "Petal_length": 0 },
-        { Species: "Iris-virginica", "Petal_width": 0 }
+        { Species: "Iris-setosa", "Petal_length": 0, "Max": 0, "Min": 0},
+        { Species: "Iris-setosa", "Petal_width": 0, "Max": 0, "Min": 0},
+        { Species: "Iris-versicolor", "Petal_length": 0, "Max": 0, "Min": 0},
+        { Species: "Iris-versicolor", "Petal_width": 0, "Max": 0, "Min": 0},
+        { Species: "Iris-virginica", "Petal_length": 0, "Max": 0, "Min": 0},
+        { Species: "Iris-virginica", "Petal_width": 0, "Max": 0, "Min": 0}
     ]
+
 
     // Get average petal length and widths, fill myMap var
     let i = 1;
@@ -43,12 +58,18 @@ function groupedBarChart(svg_name, data, x_field) {
         let lens = avglengths(data, index.Species)
         if (i % 2 > 0) {
             index.Petal_length = lens[0]
+            index.Max = lens[2]
+            index.Min = lens[3]
         }
         else {
             index.Petal_width = lens[1]
+            index.Max = lens[4]
+            index.Min = lens[5]
         }
         i++;
     }
+
+    console.log(myMap)
 
     // x position scale
     let x = d3.scaleBand()
@@ -111,10 +132,10 @@ function groupedBarChart(svg_name, data, x_field) {
         .data(function (d) {
             return myMap.map(function (key) { // Whether data point has length or width, it will look exactly the same for the rest of the chained function
                 if (key["Petal_length"] === undefined) {
-                    return { key: key["Species"], value: d["Petal_width"], value1: "Petal_width" };
+                    return { key: key["Species"], value: d["Petal_width"], value1: "Petal_width", max: d["Max"], min: d["Min"]};
                 }
                 else
-                    return { key: key["Species"], value: d["Petal_length"], value1: "Petal_length" };
+                    return { key: key["Species"], value: d["Petal_length"], value1: "Petal_length", max: d["Max"], min: d["Min"]};
             });
         })
         .enter()
@@ -129,7 +150,48 @@ function groupedBarChart(svg_name, data, x_field) {
                 return  innerHeight - y(d.value); 
         })
         .attr("length", 0)
-        .attr("fill", function (d) { return color(d.value1); });
+        .attr("fill", function (d) { return color(d.value1); })
+        .on("mouseover", onMouseOver)
+        .on("mousemove", onMouseMove)
+		.on("mouseleave", onMouseOut)
+
+	function onMouseOver(d, i) {
+		d3.select(this).style("opacity", "0.85");
+
+		g.append("text")
+			.attr('class', 'val')
+			.html(function () {
+				return [d.max, d.min, d.value];
+			})
+			.attr('x', function() {
+				return d3.mouse(this)[0] + 10;
+                //x(subGroup(d.value1));
+			})
+			.attr('y', function() {
+				return d3.mouse(this)[1] - 5;
+                //y(d.value) - 15;
+			})
+	}
+
+    function onMouseMove(d, i) {
+        d3.select(this).style("opacity", "0.85");
+        g.selectAll('.val')
+        .attr('x', function() {
+            return d3.mouse(this)[0] + 10;
+            //x(subGroup(d.value1));
+        })
+        .attr('y', function() {
+            return d3.mouse(this)[1] - 5;
+            //y(d.value) - 15;
+        })
+      }
+
+	function onMouseOut(d, i) {
+		d3.select(this).attr("opacity", "1");
+
+		d3.selectAll('.val')
+			.remove()
+	}
 
     // Add title
     let title = "Average Petal Width and Petal Length by Species";

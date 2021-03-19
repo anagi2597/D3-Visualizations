@@ -106,27 +106,26 @@ function irisStackedBarChart(svg_name, data, x_field) {
 	let keys = ["Petal_length", "Sepal_length"]
 
 	// generate points
-	let points = g.append("g")
-		.selectAll("g")
+	let points = g.selectAll("rect")
 		.data(d3.stack().keys(keys)(myMap))
 		.enter().append("g")
 		.attr("fill", function (d) { return color(d.key); })
 		.selectAll("rect")
 		.data(function (d) { return d; })
 		.enter().append("rect")
-		.on("mouseover", onMouseOver)
-		.on("mousemove", onMouseMove)
-		.on("mouseout", onMouseOut)
+		.attr("stroke-width", 20)
 		.attr("x", function (d) { return x(d.data["Species"]); })
 		.attr("y", function (d) { return y(d[1]); })
 		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
-		.transition()
-		.duration(400)
+		.on("mouseover", onMouseOver)
+		//.on("mousemove", onMouseMove)
+		.on("mouseleave", onMouseOut);
 
 	function onMouseOver(d, i) {
-		d3.select(this).style("opacity", "0.85");
+		//d3.select(this).style("opacity", "0.85");
 
+		console.log("over", d);
 		g
 		.append("text")
 			.attr('class', 'val')
@@ -142,29 +141,29 @@ function irisStackedBarChart(svg_name, data, x_field) {
 			.attr('y', function() {
 				return y(d[1]) - 15;
 			})
-			.moveToFront()
 	}
 
-	function onMouseMove(d, i) {
-		g.append("text")
-			.attr('class', 'val')
-			.html(function () {
-				let value = d[1] - d[0];
-				value = value.toFixed(2);
-				value = value.toString();
-				return ['$' + value];
-			})
-			.attr('x', function() {
-				return x(d.data["Species"]) -10;
-			})
-			.attr('y', function() {
-				return y(d[1]) - 15;
-			})
-			.moveToFront()
-	  }
+	// function onMouseMove(d, i) {
+	// 	g.append("text")
+	// 		.attr('class', 'val')
+	// 		.html(function () {
+	// 			let value = d[1] - d[0];
+	// 			value = value.toFixed(2);
+	// 			value = value.toString();
+	// 			return ['$' + value];
+	// 		})
+	// 		.attr('x', function() {
+	// 			return x(d.data["Species"]) -10;
+	// 		})
+	// 		.attr('y', function() {
+	// 			return y(d[1]) - 15;
+	// 		})
+	// 		.moveToFront()
+	//   }
 
 	function onMouseOut(d, i) {
-		d3.select(this).style("opacity", "1");
+		//d3.select(this).style("opacity", "1");
+		console.log("out", d);
 
 		d3.selectAll('.val')
 			.remove()
