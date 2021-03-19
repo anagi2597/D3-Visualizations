@@ -75,7 +75,20 @@
     </div>
 
     <h3>Visualization 2: Bivariate</h3>
+    <button id="all" onClick="xAxis = 'Sepal_length';
+                              yAxis = 'Sepal_width';
+                              vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
+    <button id="versicolor" onClick="xAxis = 'Sepal_length';
+                                    yAxis = 'Sepal_width';
+                                    vis_2 = scatterVersicolor('#vis_2',data, xAxis, yAxis);">Iris-versicolor</button>
+    <button id="virginica" onClick="xAxis = 'Sepal_length';
+                                    yAxis = 'Sepal_width';
+                                    vis_2 = scatterVirginica('#vis_2',data, xAxis, yAxis);">Iris-virginica</button>
+    <button id="setosa" onClick="xAxis = 'Sepal_length';
+                                    yAxis = 'Sepal_width';
+                                    vis_2 = scatterSetosa('#vis_2',data, xAxis, yAxis);">Iris-setosa </button>
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
+    
     <div>
         <p>This visualization plots an Iris species' sepal width versus its sepal length to make it easy to notice if there are any correlations between the two, for any of the three included Iris species. 
         Taking a look at the graph, there seems to be only one species of Iris that may have a strong correlation between the two variables, that species being the Iris-setosa.</p>
@@ -120,8 +133,6 @@
         };
     }).then(rows => {
         xAxis = "Species"
-        let group1 = "Petal_length"
-        let group2 = "Sepal_length"
         data = rows;
 
         vis_1 = irisStackedBarChart("#vis_1",data, xAxis)
@@ -130,10 +141,9 @@
         yAxis = "Sepal_width"
         vis_2 = scatterPlot("#vis_2", data, xAxis, yAxis)
 
+
         xAxis = "Species"
-        group1 = "Petal_length"
-        group2 = "Petal_width"
-        vis_3 = groupedBarChart("#vis_3", data, xAxis, group1, group2)
+        vis_3 = groupedBarChart("#vis_3", data, xAxis)
     
     }).catch(error => {
         console.log(error);

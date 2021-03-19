@@ -1,4 +1,4 @@
-function groupedBarChart(svg_name, data, x_field, group1, group2) {
+function groupedBarChart(svg_name, data, x_field) {
 
     // General Variables
     const margin = { top: 50, right: 20, left: 60, bottom: 55 };

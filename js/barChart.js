@@ -6,6 +6,8 @@ d3.selection.prototype.moveToFront = function () {
 };
 
 function irisStackedBarChart(svg_name, data, x_field) {
+	var svg = d3.select(svg_name);
+	svg.selectAll("*").remove();
 
 	// General letiables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
