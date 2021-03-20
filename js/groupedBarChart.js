@@ -1,5 +1,3 @@
-//const { min } = require("d3-array");
-
 function groupedBarChart(svg_name, data, x_field) {
     let svg = d3.select(svg_name);
     svg.selectAll("*").remove();
@@ -39,7 +37,6 @@ function groupedBarChart(svg_name, data, x_field) {
         avgPLen /= count;
         avgPWidth /= count;
 
-        console.log([avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW]);
         return [avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW];
     }
 
@@ -52,7 +49,6 @@ function groupedBarChart(svg_name, data, x_field) {
         { Species: "Iris-virginica", "Petal_length": 0, "Max": 0, "Min": 0 },
         { Species: "Iris-virginica", "Petal_width": 0, "Max": 0, "Min": 0 }
     ]
-
 
     // Get average petal length and widths, fill myMap var
     let i = 1;
@@ -72,7 +68,6 @@ function groupedBarChart(svg_name, data, x_field) {
         i++;
     }
 
-    console.log(myMap)
 
     // x position scale
     let x = d3.scaleBand()
@@ -249,8 +244,19 @@ function groupedBarChart(svg_name, data, x_field) {
     }
 
     function onClick(d, i) {
-        console.log("clicked", d);
         zoomGraph(svg_name, data, x_field, d.key);
+
+        let xAxis = "Sepal_length"
+        let yAxis = "Sepal_width"
+
+        if(d.key == "Iris-setosa")
+            scatterSetosa("#vis_2", data, xAxis, yAxis)
+        else if(d.key == "Iris-versicolor")
+            scatterVersicolor("#vis_2", data, xAxis, yAxis)
+        else if(d.key == "Iris-virginica")
+            scatterVirginica("#vis_2", data, xAxis, yAxis)
+        else
+            return -1;
     }
 
     // Add title
@@ -262,10 +268,10 @@ function groupedBarChart(svg_name, data, x_field) {
         .text(title);
 
     // Add Legend
-    g.append("circle").attr("cx", 85).attr("cy", 15).attr("r", 6).style("fill", "blue")
-    g.append("circle").attr("cx", 85).attr("cy", 40).attr("r", 6).style("fill", "green")
-    g.append("text").attr("x", 95).attr("y", 15).text("Petal Length").style("font-size", "15px").attr("alignment-baseline", "middle")
-    g.append("text").attr("x", 95).attr("y", 40).text("Petal Width").style("font-size", "15px").attr("alignment-baseline", "middle")
+    g.append("circle").attr("cx", 85).attr("cy", 15).attr("r", 6).style("fill", "blue");
+    g.append("circle").attr("cx", 85).attr("cy", 40).attr("r", 6).style("fill", "green");
+    g.append("text").attr("x", 95).attr("y", 15).text("Petal Length").style("font-size", "15px").attr("alignment-baseline", "middle");
+    g.append("text").attr("x", 95).attr("y", 40).text("Petal Width").style("font-size", "15px").attr("alignment-baseline", "middle");
 
 
     // return chart data that can be used later
@@ -318,7 +324,6 @@ function zoomGraph(svg_name, data, x_field, zoomSpecies) {
         avgPLen /= count;
         avgPWidth /= count;
 
-        console.log([avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW]);
         return [avgPLen.toFixed(2), avgPWidth.toFixed(2), maxL, minL, maxW, minW];
     }
 
@@ -539,8 +544,11 @@ function zoomGraph(svg_name, data, x_field, zoomSpecies) {
     }
 
     function onClick(d, i) {
-        console.log("clicked", d);
         groupedBarChart(svg_name, data, x_field);
+
+        let xAxis = "Sepal_length"
+        let yAxis = "Sepal_width"
+        scatterPlot("#vis_2", data, xAxis, yAxis)
     }
 
     // Add title

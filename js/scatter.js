@@ -86,7 +86,6 @@ function scatterPlot(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
@@ -232,7 +231,6 @@ function scatterVersicolor(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
@@ -367,7 +365,6 @@ function scatterVirginica(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
@@ -502,7 +499,6 @@ function scatterSetosa(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
@@ -637,7 +633,6 @@ function malePlot(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
@@ -770,7 +765,6 @@ function femalePlot(svg_name, data, x_field, y_field) {
             .attr("fill-opacity", 0.85)
             .moveToFront();
 
-        console.log("over", d);
         g.append("text")
             .attr('class', 'val')
             .html(function () {
