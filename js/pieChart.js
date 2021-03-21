@@ -55,7 +55,7 @@ function pieChart(svg_name, data, count) {
         .on('mousemove', mousemove)
         .on('mouseout', mouseleave);
 
-    var tooltip = d3.select(svg_name)
+    let tooltip = d3.select(svg_name)
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -84,6 +84,7 @@ function pieChart(svg_name, data, count) {
         tooltip
             .style("opacity", 0)
     }
+    
     // Add labels 
     g.selectAll('arc')
         .data(entries).enter()

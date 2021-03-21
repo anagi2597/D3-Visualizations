@@ -31,14 +31,8 @@ function scatterPlot(svg_name, data, x_field, y_field) {
     // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x))
-        .append('text')
-        .attr('class', 'axis-label')
-        .attr('y', 45)
-        .attr('x', innerWidth / 2)
-        .attr('fill', 'black')
-        .text(x_field.replace("_", " "))
-        .style("font-size", 15);
+        .call(d3.axisBottom(x));
+
 
     // y position scale
     let y = d3.scaleLinear()
@@ -145,7 +139,16 @@ function scatterPlot(svg_name, data, x_field, y_field) {
         .text(title)
         .style("font-size", 15);
 
-    // Add Legend
+    // X axis title
+    g.append('text')
+        .attr('class', 'axis-label')
+        .attr("transform", "translate(0," + innerHeight + ")")
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
+
     // Add Legend
     if (data[1]["Age"] === undefined) { // Only for Iris data set
         g.append("circle").attr("cx", 700).attr("cy", -30).attr("r", 5).style("fill", "blue")
@@ -206,14 +209,7 @@ function scatterFlower(svg_name, data, x_field, y_field, flower) {
     // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x))
-        .append('text')
-        .attr('class', 'axis-label')
-        .attr('y', 45)
-        .attr('x', innerWidth / 2)
-        .attr('fill', 'black')
-        .text(x_field.replace("_", " "))
-        .style("font-size", 15);
+        .call(d3.axisBottom(x));
 
     // y position scale
     let y = d3.scaleLinear()
@@ -320,6 +316,16 @@ function scatterFlower(svg_name, data, x_field, y_field, flower) {
         .text(title)
         .style("font-size", 15);
 
+    // X axis title
+    g.append('text')
+        .attr('class', 'axis-label')
+        .attr("transform", "translate(0," + innerHeight + ")")
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
+
     // Add Legend
     g.append("circle").attr("cx", 700).attr("cy", -30).attr("r", 5).style("fill", color(flower))
     g.append("text").attr("x", 710).attr("y", -30).text(flower).style("font-size", "15px").attr("alignment-baseline", "middle")
@@ -369,14 +375,7 @@ function sexPlot(svg_name, data, x_field, y_field, sex) {
     // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x))
-        .append('text')
-        .attr('class', 'axis-label')
-        .attr('y', 45)
-        .attr('x', innerWidth / 2)
-        .attr('fill', 'black')
-        .text(x_field.replace("_", " "))
-        .style("font-size", 15);
+        .call(d3.axisBottom(x));
 
     // y position scale
     let y = d3.scaleLinear()
@@ -469,12 +468,22 @@ function sexPlot(svg_name, data, x_field, y_field, sex) {
         .text(title)
         .style("font-size", 15);
 
+    // X axis title
+    g.append('text')
+        .attr('class', 'axis-label')
+        .attr("transform", "translate(0," + innerHeight + ")")
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
+        
     // Add Legend
     let legTitle = ''
-    if(sex == 'male'){
+    if (sex == 'male') {
         legTitle = 'Male'
     }
-    else{
+    else {
         legTitle = 'Female'
     }
     g.append("circle").attr("cx", 700).attr("cy", -30).attr("r", 5).style("fill", color(sex))

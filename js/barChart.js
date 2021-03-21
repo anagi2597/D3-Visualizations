@@ -191,14 +191,22 @@ function irisStackedBarChart(svg_name, data, x_field) {
 }
 
 function titanicBarChart(svg_name, data, x_field) {
+	var svg = d3.select(svg_name);
+	svg.selectAll("*").remove();
 
-	// General letiables
+	// General variables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
+	let chart_width = 900;
+	let chart_height = 500;
 	let chart = d3.select(svg_name).append("svg")
-	let chart_width = $(svg_name).width();
-	let chart_height = $(svg_name).height();
+		.attr("width", chart_width)
+		.attr("height", chart_height);
 	const innerWidth = chart_width - margin.left - margin.right;
 	const innerHeight = chart_height - margin.top - margin.bottom;
+
+	// Axes
+	const g = chart.append('g')
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 	// x position scale
 	let x = d3.scaleBand()
@@ -206,9 +214,195 @@ function titanicBarChart(svg_name, data, x_field) {
 		.range([0, innerWidth])
 		.padding(0.1);
 
+	// X Axis
+	let xAxis = g.append("g")
+		.attr("transform", "translate(0," + innerHeight + ")")
+		.call(d3.axisBottom(x));
+
 	// y position scale
 	let y = d3.scaleLinear()
 		.domain(d3.extent(data, function (d) { return d[x_field]; }))
+		.range([innerHeight, 0]);
+
+	// Y Axis
+	g.append('g').call(d3.axisLeft(y))
+		.append('text')
+		.attr('class', 'axis-label')
+		.attr('y', -40)
+		.attr('x', -innerHeight / 2)
+		.attr('fill', 'black')
+		.attr('transform', `rotate(-90)`)
+		.attr('text-anchor', 'middle')
+		.text(x_field + " (USD)")
+		.style("font-size", 15);
+
+	// // X Axis Title
+	g.append('text')
+		.attr('class', 'axis-label')
+		.attr("transform", "translate(0," + innerHeight + ")")
+		.attr('y', 45)
+		.attr('x', innerWidth / 2)
+		.attr('fill', 'black')
+		.text(x_field.replace("_", " "))
+		.style("font-size", 15);
+
+	// Add a clipPath: everything out of this area won't be drawn.
+	let clip = g.append("defs").append("svg:clipPath")
+		.attr("id", "clip")
+		.append("svg:rect")
+		.attr("width", innerWidth)
+		.attr("height", innerHeight)
+		.attr("x", 0)
+		.attr("y", 0);
+
+	// Add brushing
+	let brush = d3.brushX()
+		.extent([[0, 0], [innerWidth, innerHeight]])
+		.on("end", updateChart)
+
+	// Create the scatter variable: where both the circles and the brush take place
+	let scatter = g.append('g')
+		.attr("clip-path", "url(#clip)")
+
+	// generate points
+	let points = g.selectAll("rect")
+		.data(data).enter()
+		.append("rect")
+		.attr("width", x.bandwidth())
+		.attr("height", function (d) { return innerHeight - y(d[x_field]); })
+		.attr("x", function (d, i) { return x(i); })
+		.attr("y", function (d) { return y(d[x_field]); })
+		.attr("fill", "#0000be")
+
+	// Add the brushing
+	scatter
+		.append("g")
+		.attr("class", "brush")
+		.call(brush);
+
+	// A function that set idleTimeOut to null
+	let idleTimeout
+	function idled() { idleTimeout = null; }
+	function updateChart() {
+
+		let extent = d3.event.selection
+
+		// If no selection, back to initial coordinate. Otherwise, update X axis domain
+		if (!extent) {
+			if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+			x.domain(d3.extent(data, d => d[x_field]))
+		} else {
+			x.domain([x.invert(extent[0]), x.invert(extent[1])])
+			scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+		}
+
+		// Update axis and circle position
+		xAxis.transition().duration(1000).call(d3.axisBottom(x))
+		scatter
+			.selectAll("circle")
+			.transition().duration(1000)
+			.attr("x", function (d, i) { return x(i); })
+			.attr("y", function (d) { return y(d[x_field]); })
+
+	}
+
+	// 	.on('mouseover', mouseover)
+	// 	.on('mousemove', mousemove)
+	// 	.on('mouseout', mouseleave)
+	// 	.on("click", mouseClick);
+
+	// let tooltip = d3.select(svg_name)
+	// 	.append("div")
+	// 	.style("opacity", 0)
+	// 	.attr("class", "tooltip")
+	// 	.style("background-color", "white")
+	// 	.style("border", "solid")
+	// 	.style("border-width", "1px")
+	// 	.style("border-radius", "5px")
+	// 	.style("padding", "10px");
+
+	// function mouseover(d) {
+	// 	let price = d[x_field].toFixed(2);
+	// 	let age = d['Age'];
+	// 	let sex = d['Sex'];
+	// 	tooltip
+	// 		.html("Price: " + price + "<br>" + "Age: " + age + "<br>" + "Sex: " + sex)
+	// 		.style("opacity", 1)
+	// 		.style("color", "blue")
+	// }
+
+	// function mousemove(d) {
+	// 	tooltip
+	// 		.style("left", (d3.event.pageX + 15) + "px")
+	// 		.style("top", (d3.event.pageY - 15) + "px")
+	// }
+
+	// function mouseleave(d) {
+	// 	tooltip
+	// 		.style("opacity", 0)
+	// }
+
+	// function mouseClick(d, i) {
+	// 	zoomTitanicBarChart(svg_name, data, x_field, i);
+	// }
+
+	// Add title
+	let title = "Fare Amount Paid by Each Passenger";
+	g.append('text')
+		.attr('class', 'title')
+		.attr('y', -15)
+		.attr('x', innerWidth / 2 - 100)
+		.text(title)
+		.style("font-size", 15);
+
+	// return chart data that can be used later
+	return {
+		chart: chart,
+		chart_width: chart_width,
+		chart_height: chart_height,
+		x_scale: x,
+		y_scale: y,
+		points: points
+	}
+}
+
+
+function zoomTitanicBarChart(svg_name, data, x_field, stop) {
+	var svg = d3.select(svg_name);
+	svg.selectAll("*").remove();
+
+	let newData = []
+	let i = 0;
+	for (const index of data) {
+		if (i <= stop) {
+			newData.push(index);
+		}
+		else
+			break;
+		i++;
+	}
+
+	console.log(stop, i, newData);
+
+	// General variables
+	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
+	let chart_width = 900;
+	let chart_height = 500;
+	let chart = d3.select(svg_name).append("svg")
+		.attr("width", chart_width)
+		.attr("height", chart_height);
+	const innerWidth = chart_width - margin.left - margin.right;
+	const innerHeight = chart_height - margin.top - margin.bottom;
+
+	// x position scale
+	let x = d3.scaleBand()
+		.domain(newData.map(function (d, i) { return i; }))
+		.range([0, innerWidth])
+		.padding(0.1);
+
+	// y position scale
+	let y = d3.scaleLinear()
+		.domain(d3.extent(newData, function (d) { return d[x_field]; }))
 		.range([innerHeight, 0]);
 
 	// Axes
@@ -241,13 +435,52 @@ function titanicBarChart(svg_name, data, x_field) {
 
 	// generate points
 	let points = g.selectAll("rect")
-		.data(data).enter()
+		.data(newData).enter()
 		.append("rect")
 		.attr("width", x.bandwidth())
 		.attr("height", function (d) { return innerHeight - y(d[x_field]); })
 		.attr("x", function (d, i) { return x(i); })
 		.attr("y", function (d) { return y(d[x_field]); })
 		.attr("fill", "#0000be")
+		.on('mouseover', mouseover)
+		.on('mousemove', mousemove)
+		.on('mouseout', mouseleave)
+		.on("click", mouseClick);
+
+	let tooltip = d3.select(svg_name)
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "tooltip")
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "1px")
+		.style("border-radius", "5px")
+		.style("padding", "10px");
+
+	function mouseover(d) {
+		let price = d[x_field].toFixed(2);
+		let age = d['Age'];
+		let sex = d['Sex'];
+		tooltip
+			.html("Price: " + price + "<br>" + "Age: " + age + "<br>" + "Sex: " + sex)
+			.style("opacity", 1)
+			.style("color", "blue")
+	}
+
+	function mousemove(d) {
+		tooltip
+			.style("left", (d3.event.pageX + 15) + "px")
+			.style("top", (d3.event.pageY - 15) + "px")
+	}
+
+	function mouseleave(d) {
+		tooltip
+			.style("opacity", 0)
+	}
+
+	function mouseClick(d, i) {
+		zoomTitanicBarChart(svg_name, data, x_field, i);
+	}
 
 	// Add title
 	let title = "Fare Amount Paid by Each Passenger";
@@ -268,7 +501,6 @@ function titanicBarChart(svg_name, data, x_field) {
 		points: points
 	}
 }
-
 
 
 

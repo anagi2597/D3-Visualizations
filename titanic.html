@@ -63,7 +63,10 @@
     <h2>Ayman Nagi</h2>
 
     <h3>Visualization 1: Univariate</h3>
-    <div><svg id="vis_1" name="vis_1" class="default_svg"></svg></div>
+    <button id="reset" onClick="xAxis = 'Fare';
+                vis_1 = titanicBarChart('#vis_1',data, xAxis);">Reset</button>
+    <div id="vis_1" name ="vis_1" class="default_svg"> 
+    </div>
     <div>
         <p>This visualization's goal is to show the audience what people paid in 1912 for a ticket to board the largest cruise ship in the world, the Titanic. </p>
         <p>When looking at this bar chart, one could get an idea of the average price a passenger paid to set sail and would notice how very few people paid very high prices.
@@ -218,11 +221,10 @@
             Fare: +row.fare,
         };
     }).then(rows => {
-        xAxis = "Fare"        
+        xAxis = "Fare";
         rows.sort(compare);
-        
         data = rows;
-        vis_1 = titanicBarChart("#vis_1",data, xAxis)
+        vis_1 = titanicBarChart("#vis_1",data, xAxis);
 
         //xAxis = "Survived"
         //yAxis = "Fare"
