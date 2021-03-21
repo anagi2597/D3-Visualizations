@@ -88,7 +88,15 @@ function pieChart(svg_name, data, count) {
     g.selectAll('arc')
         .data(entries).enter()
         .append('text')
-        .text(d => d.data.key.charAt(0).toUpperCase() + d.data.key.slice(1))
+        .text(function(d) {
+            try {
+                let full = d.data.key.split(" ")
+                return full[0][0].toUpperCase() + "." + full[1][0];
+              }
+              catch(err) {
+                return d.data.key.charAt(0).toUpperCase() + d.data.key.slice(1)
+              }
+        })
         .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
         .style("text-anchor", "middle")
         .style("font-size", 15
