@@ -5,7 +5,10 @@ d3.selection.prototype.moveToFront = function () {
     });
 };
 
-function pieChart(svg_name, data) {
+function pieChart(svg_name, data, count) {
+    var svg = d3.select(svg_name);
+	svg.selectAll("*").remove();
+
     // General variables
     const margin = 50
     let chart_width = 900;
@@ -40,17 +43,6 @@ function pieChart(svg_name, data) {
     const g = chart.append("g")
         .attr("transform", "translate(" + chart_width / 2 + "," + chart_height / 2 + ")");
 
-    // var div = d3.select(svg_name).append("div")
-    //     .style("opacity", 1)
-    //     .attr("class", "tooltip")
-    //     .style("background-color", "white")
-    //     .style("border", "solid")
-    //     .style("border-width", "1px")
-    //     .style("border-radius", "5px")
-    //     .style("padding", "10px")
-
-    console.log(entries);
-
     // generate points    
     let points = g.selectAll('arc')
         .data(entries).enter()
@@ -59,37 +51,39 @@ function pieChart(svg_name, data) {
         .attr('fill', d => color(d.data.key))
         .attr("stroke", "black")
         .attr('transform', 'translate(0, 0)')
-        .on('mouseover', function (d, i) {
-            d3.select(this).transition()
-                .duration('50')
-                .attr('opacity', '.85');
-            let num = (Math.round((d.data.value / 1309) * 100)).toString() + '%';
+        .on('mouseover', mouseover)
+        .on('mousemove', mousemove)
+        .on('mouseout', mouseleave);
 
-            g.append('text')
-                .attr('class', 'label')
-                .attr('y', -220)
-                .attr('x', -120)
-                .text(num);
-
-        })
-        .on('mouseout', function (d, i) {
-            d3.select(this).transition()
-                .duration('50')
-                .attr('opacity', '1');
-            g.selectAll('.label').remove();
-
-        });
-
-        var tooltip = d3.select(svg_name)
+    var tooltip = d3.select(svg_name)
         .append("div")
-        .style("opacity", 1)
+        .style("opacity", 0)
         .attr("class", "tooltip")
         .style("background-color", "white")
         .style("border", "solid")
         .style("border-width", "1px")
         .style("border-radius", "5px")
-        .style("padding", "10px")
+        .style("padding", "10px");
 
+    function mouseover(d) {
+        let percent = (Math.round((d.data.value / count) * 100)).toString() + '%';
+        tooltip
+            .html("Category: " + d.data.key + "<br>" + "Count: " + d.data.value + "<br>" + "Percent: " + percent)
+            .style("opacity", 1)
+            .style("color", "blue")
+
+    }
+
+    function mousemove(d) {
+        tooltip
+            .style("left",(d3.event.pageX + 15) + "px")
+            .style("top", (d3.event.pageY - 15) + "px")
+    }
+
+    function mouseleave(d) {
+        tooltip
+            .style("opacity", 0)
+    }
     // Add labels 
     g.selectAll('arc')
         .data(entries).enter()

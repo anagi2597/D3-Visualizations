@@ -91,6 +91,27 @@
     </div>
 
     <h3>Visualization 3: Aggregation</h3>
+    <button id="all" onClick="let res = getPieData(data);
+                            let pie = res[0];
+                            let count = res[1]
+                            vis_3 = pieChart('#vis_3', pie, count)
+                            xAxis = 'Age';
+                            yAxis = 'Fare';
+                            vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
+    <button id="male" onClick="let res = getMalePieData(data);
+                                let pie = res[0];
+                                let count = res[1]
+                                vis_3 = pieChart('#vis_3', pie, count)
+                                xAxis = 'Age';
+                                yAxis = 'Fare';
+                                vis_2 = malePlot('#vis_2',data, xAxis, yAxis);">Male</button>
+    <button id="female" onClick="let res = getFemalePieData(data);
+                                let pie = res[0];
+                                let count = res[1]
+                                vis_3 = pieChart('#vis_3', pie, count)
+                                xAxis = 'Age';
+                                yAxis = 'Fare';
+                                vis_2 = femalePlot('#vis_2',data, xAxis, yAxis);">Female</button>
     <div id="vis_3" name ="vis_3"> 
     </div>
     <div>
@@ -129,7 +150,8 @@
     // Returns map of only needed data for pieChart function to easier parse data
     function getPieData(data){
         let map = {"Male Survived": 0, "Female Survived": 0, "Male Died": 0, "Female Died": 0}
-        
+        let count = 0;
+
         for(const index of data){
             if(index.Survived === "Yes"){
                 if(index.Sex == "male"){
@@ -145,9 +167,46 @@
                     map["Female Died"] += 1
                 }
             }
+            count++;
         }
-        //console.log(map)
-        return map
+        //console.log("all", map)
+        return [map, count]
+    }
+
+    function getMalePieData(data){
+        let map = {"Survived": 0, "Died": 0}
+        let count = 0;
+
+        for(const index of data){
+            if(index.Survived === "Yes" && index.Sex == "male"){
+                map["Survived"] += 1
+                count++;
+            }
+            else if(index.Survived === "No" && index.Sex == "male"){
+                map["Died"] += 1;
+                count++;
+            }
+        }
+        //console.log("male", map)
+        return [map, count]
+    }
+
+    function getFemalePieData(data){
+        let map = {"Survived": 0, "Died": 0}
+        let count = 0;
+
+        for(const index of data){
+            if(index.Survived === "Yes" && index.Sex == "female"){
+                map["Survived"] += 1;
+                count++;
+            }
+            else if(index.Survived === "No" && index.Sex == "female"){
+                map["Died"] += 1;
+                count++;
+            }
+        }
+        //console.log("female", map)
+        return [map, count]
     }
 
 
@@ -170,8 +229,11 @@
         yAxis = "Fare" 
         vis_2 = scatterPlot("#vis_2", data, xAxis, yAxis)
 
-        let pie = getPieData(rows);
-        vis_3 = pieChart("#vis_3", pie)
+        let res = getPieData(rows);
+        let pie = res[0];
+        let count = res[1]
+        //console.log(pie, count)
+        vis_3 = pieChart("#vis_3", pie, count)
     
     }).catch(error => {
         console.log(error);
