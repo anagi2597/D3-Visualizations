@@ -27,14 +27,23 @@ function scatterPlot(svg_name, data, x_field, y_field) {
         .domain(d3.extent(data, d => d[x_field]))
         .range([5, innerWidth - 5])
         .nice();
+
+    // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append('text')
+        .attr('class', 'axis-label')
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
 
     // y position scale
     let y = d3.scaleLinear()
         .domain(d3.extent(data, d => d[y_field]))
-        .range([innerHeight-5, 5])
+        .range([innerHeight - 5, 5])
         .nice();
 
     // Y Axis
@@ -49,15 +58,15 @@ function scatterPlot(svg_name, data, x_field, y_field) {
         .text(y_field.replace("_", " "))
         .style("font-size", 15);
 
-    
+
     let color = d3.scaleOrdinal();
     if (data[1]["Age"] === undefined) { // Only for Iris data set
         color.domain(["Iris-versicolor", "Iris-virginica", "Iris-setosa"])
-        .range(["blue", "green", "red"]);
+            .range(["blue", "green", "red"]);
     }
-    else{
+    else {
         color.domain(["male", "female"])
-        .range(["blue", "pink"])
+            .range(["blue", "pink"])
     }
 
     // Add a clipPath: everything out of this area won't be drawn.
@@ -85,12 +94,12 @@ function scatterPlot(svg_name, data, x_field, y_field) {
         .attr("r", 5)
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
-        .style("fill", function (d) { 
+        .style("fill", function (d) {
             if (data[1]["Age"] === undefined) {
-                return color(d["Species"]) 
+                return color(d["Species"])
             }
-            else{
-                return color(d["Sex"]) 
+            else {
+                return color(d["Sex"])
             }
         });
 
@@ -193,14 +202,23 @@ function scatterFlower(svg_name, data, x_field, y_field, flower) {
         .domain(d3.extent(newData, d => d[x_field]))
         .range([5, innerWidth - 5])
         .nice();
+
+    // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append('text')
+        .attr('class', 'axis-label')
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
 
     // y position scale
     let y = d3.scaleLinear()
         .domain(d3.extent(newData, d => d[y_field]))
-        .range([innerHeight-5, 5])
+        .range([innerHeight - 5, 5])
         .nice();
 
     // Y Axis
@@ -215,15 +233,15 @@ function scatterFlower(svg_name, data, x_field, y_field, flower) {
         .text(y_field.replace("_", " "))
         .style("font-size", 15);
 
-    
+
     let color = d3.scaleOrdinal();
     if (data[1]["Age"] === undefined) { // Only for Iris data set
         color.domain(["Iris-versicolor", "Iris-virginica", "Iris-setosa"])
-        .range(["blue", "green", "red"]);
+            .range(["blue", "green", "red"]);
     }
-    else{
+    else {
         color.domain(["male", "female"])
-        .range(["blue", "pink"])
+            .range(["blue", "pink"])
     }
 
     // Add a clipPath: everything out of this area won't be drawn.
@@ -251,12 +269,12 @@ function scatterFlower(svg_name, data, x_field, y_field, flower) {
         .attr("r", 5)
         .attr("cx", function (d) { return x(d[x_field]); })
         .attr("cy", function (d) { return y(d[y_field]); })
-        .style("fill", function (d) { 
+        .style("fill", function (d) {
             if (data[1]["Age"] === undefined) {
-                return color(d["Species"]) 
+                return color(d["Species"])
             }
-            else{
-                return color(d["Sex"]) 
+            else {
+                return color(d["Sex"])
             }
         });
 
@@ -347,14 +365,23 @@ function sexPlot(svg_name, data, x_field, y_field, sex) {
         .domain(d3.extent(newData, d => d[x_field]))
         .range([5, innerWidth - 5])
         .nice();
+
+    // X Axis
     let xAxis = g.append("g")
         .attr("transform", "translate(0," + innerHeight + ")")
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x))
+        .append('text')
+        .attr('class', 'axis-label')
+        .attr('y', 45)
+        .attr('x', innerWidth / 2)
+        .attr('fill', 'black')
+        .text(x_field.replace("_", " "))
+        .style("font-size", 15);
 
     // y position scale
     let y = d3.scaleLinear()
         .domain(d3.extent(newData, d => d[y_field]))
-        .range([innerHeight-5, 5])
+        .range([innerHeight - 5, 5])
         .nice();
 
     // Y Axis
@@ -443,10 +470,15 @@ function sexPlot(svg_name, data, x_field, y_field, sex) {
         .style("font-size", 15);
 
     // Add Legend
-    g.append("circle").attr("cx", 700).attr("cy", -30).attr("r", 5).style("fill", "blue")
-    g.append("circle").attr("cx", 700).attr("cy", -12).attr("r", 5).style("fill", "pink")
-    g.append("text").attr("x", 710).attr("y", -30).text("Male").style("font-size", "15px").attr("alignment-baseline", "middle")
-    g.append("text").attr("x", 710).attr("y", -12).text("Female").style("font-size", "15px").attr("alignment-baseline", "middle")
+    let legTitle = ''
+    if(sex == 'male'){
+        legTitle = 'Male'
+    }
+    else{
+        legTitle = 'Female'
+    }
+    g.append("circle").attr("cx", 700).attr("cy", -30).attr("r", 5).style("fill", color(sex))
+    g.append("text").attr("x", 710).attr("y", -30).text(legTitle).style("font-size", "15px").attr("alignment-baseline", "middle")
 
 
     // return chart data that can be used later
@@ -479,13 +511,13 @@ function old_scatterPlot(svg_name, data, x_field, y_field) {
     // x position scale
     let x = d3.scaleLinear()
         .domain(d3.extent(data, d => d[x_field]))
-        .range([5, innerWidth-5])
+        .range([5, innerWidth - 5])
         .nice();
 
     // y position scale
     let y = d3.scaleLinear()
         .domain(d3.extent(data, d => d[y_field]))
-        .range([innerHeight-5, 5])
+        .range([innerHeight - 5, 5])
         .nice();
 
     // Axes
