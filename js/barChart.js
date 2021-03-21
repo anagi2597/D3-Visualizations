@@ -124,10 +124,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 
 	function onMouseOver(d, i) {
 		//d3.select(this).style("opacity", "0.85");
-
-		console.log("over", d);
-		g
-		.append("text")
+		g.append("text")
 			.attr('class', 'val')
 			.html(function () {
 				let value = d[1] - d[0];
@@ -135,10 +132,10 @@ function irisStackedBarChart(svg_name, data, x_field) {
 				value = value.toString();
 				return ['$' + value];
 			})
-			.attr('x', function() {
-				return x(d.data["Species"]) -10;
+			.attr('x', function () {
+				return x(d.data["Species"]) - 10;
 			})
-			.attr('y', function() {
+			.attr('y', function () {
 				return y(d[1]) - 15;
 			})
 	}
@@ -163,8 +160,6 @@ function irisStackedBarChart(svg_name, data, x_field) {
 
 	function onMouseOut(d, i) {
 		//d3.select(this).style("opacity", "1");
-		console.log("out", d);
-
 		d3.selectAll('.val')
 			.remove()
 	}
