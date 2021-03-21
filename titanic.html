@@ -77,8 +77,7 @@
                               vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
     <button id="male" onClick="xAxis = 'Age';
                                      yAxis = 'Fare';
-                                     let sex = 'male'
-                                     vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, sex);">Male</button>
+                                     vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'male');">Male</button>
     <button id="female" onClick="xAxis = 'Age';
                                     yAxis = 'Fare';
                                     vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');">Female</button>
@@ -104,14 +103,14 @@
                                 vis_3 = pieChart('#vis_3', pie, count)
                                 xAxis = 'Age';
                                 yAxis = 'Fare';
-                                vis_2 = malePlot('#vis_2',data, xAxis, yAxis);">Male</button>
+                                vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'male');">Male</button>
     <button id="female" onClick="let res = getFemalePieData(data);
                                 let pie = res[0];
                                 let count = res[1]
                                 vis_3 = pieChart('#vis_3', pie, count)
                                 xAxis = 'Age';
                                 yAxis = 'Fare';
-                                vis_2 = femalePlot('#vis_2',data, xAxis, yAxis);">Female</button>
+                                vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');">Female</button>
     <div id="vis_3" name ="vis_3" class="default_svg"> 
     </div>
     <div>
