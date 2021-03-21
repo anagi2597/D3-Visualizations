@@ -29,7 +29,6 @@
 
     <!--*******************************************-->
     <!--***** IMPORT EXTERNAL JAVASCRIPT CODE *****-->
-    <script src="https://d3js.org/d3-array.v2.min.js"></script>
     <script src="js/barChart.js"></script>
     <script src="js/scatter.js"></script>
     <script src="js/pieChart.js"></script>
@@ -63,8 +62,6 @@
     <h2>Ayman Nagi</h2>
 
     <h3>Visualization 1: Univariate</h3>
-    <button id="reset" onClick="xAxis = 'Fare';
-                vis_1 = titanicBarChart('#vis_1',data, xAxis);">Reset</button>
     <div id="vis_1" name ="vis_1" class="default_svg"> 
     </div>
     <div>
@@ -77,13 +74,25 @@
     <h3>Visualization 2: Bivariate</h3>
     <button id="all" onClick="xAxis = 'Age';
                               yAxis = 'Fare';
-                              vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
+                              vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);
+                              let res = getPieData(data);
+                              let pie = res[0];
+                              let count = res[1];
+                              vis_3 = pieChart('#vis_3', pie, count);">All</button>
     <button id="male" onClick="xAxis = 'Age';
-                                     yAxis = 'Fare';
-                                     vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'male');">Male</button>
+                               yAxis = 'Fare';
+                               vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'male');
+                               let res = getMalePieData(data);
+                                let pie = res[0];
+                                let count = res[1];
+                                vis_3 = pieChart('#vis_3', pie, count);">Male</button>
     <button id="female" onClick="xAxis = 'Age';
-                                    yAxis = 'Fare';
-                                    vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');">Female</button>
+                                yAxis = 'Fare';
+                                vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');
+                                let res = getFemalePieData(data);
+                                let pie = res[0];
+                                let count = res[1];
+                                vis_3 = pieChart('#vis_3', pie, count);">Female</button>
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
     <div>
         <p>This visualization aims to show if there can be any correlation found between age and fare price paid.</p>
@@ -95,22 +104,22 @@
     <h3>Visualization 3: Aggregation</h3>
     <button id="all" onClick="let res = getPieData(data);
                             let pie = res[0];
-                            let count = res[1]
-                            vis_3 = pieChart('#vis_3', pie, count)
+                            let count = res[1];
+                            vis_3 = pieChart('#vis_3', pie, count);
                             xAxis = 'Age';
                             yAxis = 'Fare';
                             vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
     <button id="male" onClick="let res = getMalePieData(data);
                                 let pie = res[0];
-                                let count = res[1]
-                                vis_3 = pieChart('#vis_3', pie, count)
+                                let count = res[1];
+                                vis_3 = pieChart('#vis_3', pie, count);
                                 xAxis = 'Age';
                                 yAxis = 'Fare';
                                 vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'male');">Male</button>
     <button id="female" onClick="let res = getFemalePieData(data);
                                 let pie = res[0];
-                                let count = res[1]
-                                vis_3 = pieChart('#vis_3', pie, count)
+                                let count = res[1];
+                                vis_3 = pieChart('#vis_3', pie, count);
                                 xAxis = 'Age';
                                 yAxis = 'Fare';
                                 vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');">Female</button>

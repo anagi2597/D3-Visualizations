@@ -211,13 +211,21 @@ function titanicBarChart(svg_name, data, x_field) {
 	// x position scale
 	let x = d3.scaleBand()
 		.domain(data.map(function (d, i) { return i; }))
-		.range([0, innerWidth])
-		.padding(0.1);
+		.range([0, innerWidth]);
 
-	// X Axis
-	let xAxis = g.append("g")
+	// X Axis 
+	let tickLabels = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300]
+	let xAxis = d3.axisBottom(x);
+	xAxis.tickValues(tickLabels);
+	g.append('g').call(xAxis)
 		.attr("transform", "translate(0," + innerHeight + ")")
-		.call(d3.axisBottom(x));
+		.attr('class', 'axis-label')
+		.append('text')
+		.attr('y', 40)
+		.attr('x', innerWidth / 2)
+		.attr('fill', 'black')
+		.text('Passenger (From cheapest to most expensive)')
+		.style("font-size", 15);
 
 	// y position scale
 	let y = d3.scaleLinear()
@@ -236,34 +244,6 @@ function titanicBarChart(svg_name, data, x_field) {
 		.text(x_field + " (USD)")
 		.style("font-size", 15);
 
-	// // X Axis Title
-	g.append('text')
-		.attr('class', 'axis-label')
-		.attr("transform", "translate(0," + innerHeight + ")")
-		.attr('y', 45)
-		.attr('x', innerWidth / 2)
-		.attr('fill', 'black')
-		.text(x_field.replace("_", " "))
-		.style("font-size", 15);
-
-	// Add a clipPath: everything out of this area won't be drawn.
-	let clip = g.append("defs").append("svg:clipPath")
-		.attr("id", "clip")
-		.append("svg:rect")
-		.attr("width", innerWidth)
-		.attr("height", innerHeight)
-		.attr("x", 0)
-		.attr("y", 0);
-
-	// Add brushing
-	let brush = d3.brushX()
-		.extent([[0, 0], [innerWidth, innerHeight]])
-		.on("end", updateChart)
-
-	// Create the scatter variable: where both the circles and the brush take place
-	let scatter = g.append('g')
-		.attr("clip-path", "url(#clip)")
-
 	// generate points
 	let points = g.selectAll("rect")
 		.data(data).enter()
@@ -273,78 +253,63 @@ function titanicBarChart(svg_name, data, x_field) {
 		.attr("x", function (d, i) { return x(i); })
 		.attr("y", function (d) { return y(d[x_field]); })
 		.attr("fill", "#0000be")
+		.on('mouseover', mouseover)
+		.on('mousemove', mousemove)
+		.on('mouseout', mouseleave)
+		.on("click", mouseClick);
 
-	// Add the brushing
-	scatter
-		.append("g")
-		.attr("class", "brush")
-		.call(brush);
+	let tooltip = d3.select(svg_name)
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "tooltip")
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "1px")
+		.style("border-radius", "5px")
+		.style("padding", "10px");
 
-	// A function that set idleTimeOut to null
-	let idleTimeout
-	function idled() { idleTimeout = null; }
-	function updateChart() {
-
-		let extent = d3.event.selection
-
-		// If no selection, back to initial coordinate. Otherwise, update X axis domain
-		if (!extent) {
-			if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
-			x.domain(d3.extent(data, d => d[x_field]))
-		} else {
-			x.domain([x.invert(extent[0]), x.invert(extent[1])])
-			scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
-		}
-
-		// Update axis and circle position
-		xAxis.transition().duration(1000).call(d3.axisBottom(x))
-		scatter
-			.selectAll("circle")
-			.transition().duration(1000)
-			.attr("x", function (d, i) { return x(i); })
-			.attr("y", function (d) { return y(d[x_field]); })
-
+	function mouseover(d) {
+		let price = d[x_field].toFixed(2);
+		tooltip
+			.html("Price: " + price)
+			.style("opacity", 1)
+			.style("color", "blue")
 	}
 
-	// 	.on('mouseover', mouseover)
-	// 	.on('mousemove', mousemove)
-	// 	.on('mouseout', mouseleave)
-	// 	.on("click", mouseClick);
+	function mousemove(d) {
+		tooltip
+			.style("left", (d3.event.pageX + 15) + "px")
+			.style("top", (d3.event.pageY - 15) + "px")
+	}
 
-	// let tooltip = d3.select(svg_name)
-	// 	.append("div")
-	// 	.style("opacity", 0)
-	// 	.attr("class", "tooltip")
-	// 	.style("background-color", "white")
-	// 	.style("border", "solid")
-	// 	.style("border-width", "1px")
-	// 	.style("border-radius", "5px")
-	// 	.style("padding", "10px");
+	function mouseleave(d) {
+		tooltip
+			.style("opacity", 0)
+	}
 
-	// function mouseover(d) {
-	// 	let price = d[x_field].toFixed(2);
-	// 	let age = d['Age'];
-	// 	let sex = d['Sex'];
-	// 	tooltip
-	// 		.html("Price: " + price + "<br>" + "Age: " + age + "<br>" + "Sex: " + sex)
-	// 		.style("opacity", 1)
-	// 		.style("color", "blue")
-	// }
+	function mouseClick(d, i) {
+		zoomTitanicBarChart(svg_name, data, x_field, i);
 
-	// function mousemove(d) {
-	// 	tooltip
-	// 		.style("left", (d3.event.pageX + 15) + "px")
-	// 		.style("top", (d3.event.pageY - 15) + "px")
-	// }
+		if (d['Sex'] == 'male') {
+			let xAxis = 'Age';
+			let yAxis = 'Fare';
+			sexPlot('#vis_2', data, xAxis, yAxis, 'male');
+			let res = getMalePieData(data);
+			let pie = res[0];
+			let count = res[1];
+			pieChart('#vis_3', pie, count);
+		}
+		else if (d['Sex'] == 'female') {
+			xAxis = 'Age';
+			yAxis = 'Fare';
+			vis_2 = sexPlot('#vis_2', data, xAxis, yAxis, 'female');
 
-	// function mouseleave(d) {
-	// 	tooltip
-	// 		.style("opacity", 0)
-	// }
-
-	// function mouseClick(d, i) {
-	// 	zoomTitanicBarChart(svg_name, data, x_field, i);
-	// }
+			let res = getFemalePieData(data);
+			let pie = res[0];
+			let count = res[1];
+			pieChart('#vis_3', pie, count);
+		}
+	}
 
 	// Add title
 	let title = "Fare Amount Paid by Each Passenger";
@@ -371,18 +336,9 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 	var svg = d3.select(svg_name);
 	svg.selectAll("*").remove();
 
-	let newData = []
-	let i = 0;
-	for (const index of data) {
-		if (i <= stop) {
-			newData.push(index);
-		}
-		else
-			break;
-		i++;
-	}
-
-	console.log(stop, i, newData);
+	let newData = [];
+	let newPoint = data[stop];
+	newData.push(newPoint);
 
 	// General variables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
@@ -396,14 +352,14 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 
 	// x position scale
 	let x = d3.scaleBand()
-		.domain(newData.map(function (d, i) { return i; }))
+		.domain([stop, stop])
 		.range([0, innerWidth])
-		.padding(0.1);
+		.padding(0.8);
 
 	// y position scale
 	let y = d3.scaleLinear()
-		.domain(d3.extent(newData, function (d) { return d[x_field]; }))
-		.range([innerHeight, 0]);
+		.domain([0, newPoint[x_field]])
+		.range([innerHeight, 20]);
 
 	// Axes
 	const g = chart.append('g')
@@ -423,14 +379,14 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 
 	// X Axis
 	g.append("g")
-		.attr("transform", "translate(" + 0 + "," + innerHeight + ")")
+		.attr("transform", "translate(0," + innerHeight + ")")
 		.call(d3.axisBottom(x))
 		.append('text')
 		.attr('class', 'axis-label')
-		.attr('y', 50)
+		.attr('y', 40)
 		.attr('x', innerWidth / 2)
 		.attr('fill', 'black')
-		.text("Passenger (from Cheapest to most Expensive)")
+		.text("Passenger")
 		.style("font-size", 15);
 
 	// generate points
@@ -439,7 +395,7 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 		.append("rect")
 		.attr("width", x.bandwidth())
 		.attr("height", function (d) { return innerHeight - y(d[x_field]); })
-		.attr("x", function (d, i) { return x(i); })
+		.attr("x", function (d, i) { return x(stop); })
 		.attr("y", function (d) { return y(d[x_field]); })
 		.attr("fill", "#0000be")
 		.on('mouseover', mouseover)
@@ -458,11 +414,13 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 		.style("padding", "10px");
 
 	function mouseover(d) {
+		let name = d['Name'];
+		let surv = d['Survived'];
 		let price = d[x_field].toFixed(2);
 		let age = d['Age'];
 		let sex = d['Sex'];
 		tooltip
-			.html("Price: " + price + "<br>" + "Age: " + age + "<br>" + "Sex: " + sex)
+			.html("Name: " + name + "<br>" + "Sex: " + sex + "<br>" + "Price: " + price + "<br>" + "Age: " + age + "<br>" + "Survived: " + surv)
 			.style("opacity", 1)
 			.style("color", "blue")
 	}
@@ -479,7 +437,14 @@ function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 	}
 
 	function mouseClick(d, i) {
-		zoomTitanicBarChart(svg_name, data, x_field, i);
+		titanicBarChart(svg_name, data, x_field);
+		let res = getPieData(data);
+		let pie = res[0];
+		let count = res[1]
+		pieChart('#vis_3', pie, count)
+		xAxis = 'Age';
+		yAxis = 'Fare';
+		scatterPlot('#vis_2', data, xAxis, yAxis);
 	}
 
 	// Add title
