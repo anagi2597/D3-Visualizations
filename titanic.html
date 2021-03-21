@@ -30,7 +30,6 @@
     <!--*******************************************-->
     <!--***** IMPORT EXTERNAL JAVASCRIPT CODE *****-->
     <script src="https://d3js.org/d3-array.v2.min.js"></script>
-    <script src="js/sample_visualization.js"></script>
     <script src="js/barChart.js"></script>
     <script src="js/scatter.js"></script>
     <script src="js/pieChart.js"></script>
@@ -78,10 +77,11 @@
                               vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
     <button id="male" onClick="xAxis = 'Age';
                                      yAxis = 'Fare';
-                                     vis_2 = malePlot('#vis_2',data, xAxis, yAxis);">Male</button>
+                                     let sex = 'male'
+                                     vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, sex);">Male</button>
     <button id="female" onClick="xAxis = 'Age';
                                     yAxis = 'Fare';
-                                    vis_2 = femalePlot('#vis_2',data, xAxis, yAxis);">Female</button>
+                                    vis_2 = sexPlot('#vis_2',data, xAxis, yAxis, 'female');">Female</button>
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
     <div>
         <p>This visualization aims to show if there can be any correlation found between age and fare price paid.</p>
@@ -224,6 +224,10 @@
         
         data = rows;
         vis_1 = titanicBarChart("#vis_1",data, xAxis)
+
+        //xAxis = "Survived"
+        //yAxis = "Fare"
+        //vis_1 = Old_titanicBarChart("#vis_1", data, xAxis, yAxis)
 
         xAxis = "Age"
         yAxis = "Fare" 

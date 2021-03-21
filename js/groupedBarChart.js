@@ -248,15 +248,7 @@ function groupedBarChart(svg_name, data, x_field) {
 
         let xAxis = "Sepal_length"
         let yAxis = "Sepal_width"
-
-        if(d.key == "Iris-setosa")
-            scatterSetosa("#vis_2", data, xAxis, yAxis)
-        else if(d.key == "Iris-versicolor")
-            scatterVersicolor("#vis_2", data, xAxis, yAxis)
-        else if(d.key == "Iris-virginica")
-            scatterVirginica("#vis_2", data, xAxis, yAxis)
-        else
-            return -1;
+        scatterFlower("#vis_2", data, xAxis, yAxis, d.key);
     }
 
     // Add title
