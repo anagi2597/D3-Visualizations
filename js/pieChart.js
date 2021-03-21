@@ -103,13 +103,32 @@ function pieChart(svg_name, data, count) {
         .style("font-size", 15
         );
 
-    // Add title
-    let title = "All Passengers Survived or not by Gender"
-    g.append('text')
+    // Add title m 843 f 466
+    let title = ''
+    if(count == 1309){
+        title = "All Passengers Survived or not by Gender"
+        g.append('text')
         .attr('class', 'title')
         .attr('y', -220)
         .attr('x', -120)
         .text(title);
+    }
+    else if(count == 843){
+        title = 'All Male Passengers Survived or not'
+        g.append('text')
+        .attr('class', 'title')
+        .attr('y', -220)
+        .attr('x', -105)
+        .text(title);
+    }
+    else if(count == 466){
+        title = 'All Female Passengers Survived or not'
+        g.append('text')
+        .attr('class', 'title')
+        .attr('y', -220)
+        .attr('x', -105)
+        .text(title);
+    }
 
 
     // return chart data that can be used later
