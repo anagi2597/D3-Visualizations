@@ -67,10 +67,12 @@
     <div id="vis_1" name ="vis_1" class="default_svg"> 
     </div>
     <div>
-        <p>This visualization shows, out of all the data, how many speicies of Iris are included and how many of each species are included.</p>
-        <p>This graph encodes the count of each species included in the famous Iris dataset.
-         As a result of the few columns in the dataset and this being a univariate visual, there weren't many options to go with here. 
-         Instead of plotting one entry at a time and making the viewer count one-by-one, I decided to count the sum of the total amount of each species and scale the y-axis off of that.</p>
+        <p>This visualization takes all the iris data and plots the average Petal and Sepal length of each species. With this data we can see how much Petal length differs from the Sepal length. 
+        This graph also shows how the lengths differ among each species. This visualization makes it easy to notice which Iris species, on average, has the largest lengths and which species has the smallest lengths.  </p>
+        <p>This graph encodes the three different types of species included in the data set which can be seen from each bar, labeled on the x-axis. Color is used to differentiate which values correspond to which length being portrayed.
+        The y-axis is made to fit just above to the maximum values plotted and each bar is scaled accordingly to realistically visualize each species' differences.
+        When a viewer hovers their mouse over a bar (Petal or Sepal length as well) the measured value is shown using an added tooltip. This makes it easier to read the exact values for each bar. 
+        Also, each bar is "highlighted" when hovered over to confirm to the viewer which bar is being referenced.</p>
     </div>
 
     <h3>Visualization 2: Bivariate</h3>
@@ -97,23 +99,16 @@
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
     
     <div>
-        <p>This visualization plots an Iris species' sepal width versus its sepal length to make it easy to notice if there are any correlations between the two, for any of the three included Iris species. 
-        Taking a look at the graph, there seems to be only one species of Iris that may have a strong correlation between the two variables, that species being the Iris-setosa.</p>
-        <p>When I first plotted all three species' data, there was no way to draw any correlation since all points were the same color. 
-        As a result, this graph also encodes the specific species associated with each data point by inluding a unique color for each species type. 
-        The x and y axes are scaled off of the minimum and highest measurements to get rid of extra, uneeded white space in the visual.</p>
+        <p>This visualization plots an Iris species' sepal width versus its sepal length to make it easy to notice if there are any correlations between the two, for any of the three included Iris species. Also included are four buttons above the graph for users to select a specific species to analyze or to compare all three together. When a button is selected, visualization 3 also changes to match the specific species or see all three species together. Viewers can also zoom in on each scatter plot to have a closer look of the data if needed. To zoom out, a viewer can double click anywhere in the box to reset the data to full size.</p>
+        <p>Color is used in this graph to encode the type of iris each data point refers to. The buttons allow users to select specific species from the data to look at instead of having to look at all three species at all times. Zooming allows for better readability and also allows users to better analyze different groups of data points. The linking between this visualization and visualization 3 also gives the viewer a better chance to understand the data per iris classification. </p>
     </div>
 
     <h3>Visualization 3: Easy Multivariate Visualizations</h3>
     <div id="vis_3" name ="vis_3" class="default_svg"> 
     </div>
     <div>
-        <p>This visual aims to show if specific Iris species have major differences in petal lengths and widths. 
-        This graph makes it easy to visualize the size difference between each of the three Iris species. </p>
-        <p>This graph encodes and groups a few things: Iris species, petal length, and petal width. 
-        To help distinguish between length and width, each measure has its own color and can be understood from the included legend in the upper left. 
-        Of course the viewer needs to also see which measurements belong to which species, so now below each grouping shows which species it belongs to.
-        Since there were so many entries of each, I decided to take the average petal lengths and widths and plot those which helped to clean up the data and make it more readable. </p>
+        <p>This visual aims to show if specific Iris species have major differences in Petal lengths and Petal widths. This graph also makes it easy to visualize the size difference between each of the three Iris species. Viewers can hover over each bar to get more information on the data encoded. Viewers can also click on a bar and the graph will visualize that specific species as well as bring up the data of the species in visualization number 2. If the user clicks a bar again the visualization goes back to showing all three species together in both visualization 2 and 3. </p>
+        <p>Color is used to encode Petal length and petal width. Each species is grouped into sets of two bars for better comparisons. Since average value is plotted, it does not tell the full story of the data, so max and min values of each category can also be seen when a viewer hovers over a certain bar. If a bar is clicked that specific species’ data will only be shown in both visualizations 3 and 2, and if the viewer clicks the bar again the view is reset to show all three species together again. </p>
     </div>
 
 </div>

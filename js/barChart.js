@@ -140,7 +140,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		let val = d[1] - d[0];
 		val = val.toFixed(2);
 		tooltip
-			.html("Value: " + val)
+			.html("Average Value: " + val)
 			.style("opacity", 1)
 			.style("color", "black");
 	}
