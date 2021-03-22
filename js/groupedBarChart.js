@@ -2,13 +2,19 @@ function groupedBarChart(svg_name, data, x_field) {
     let svg = d3.select(svg_name);
     svg.selectAll("*").remove();
 
-    // General Variables
+    // General variables
     const margin = { top: 50, right: 20, left: 60, bottom: 55 };
+    let chart_width = 900;
+    let chart_height = 500;
     let chart = d3.select(svg_name).append("svg")
-    let chart_width = $(svg_name).width();
-    let chart_height = $(svg_name).height();
+        .attr("width", chart_width)
+        .attr("height", chart_height);
     const innerWidth = chart_width - margin.left - margin.right;
     const innerHeight = chart_height - margin.top - margin.bottom;
+
+    // Axes
+    const g = chart.append('g')
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     // To get average petal lengths and widths
     function avglengths(data, species) {
@@ -91,9 +97,6 @@ function groupedBarChart(svg_name, data, x_field) {
         .domain(["Petal_width", "Petal_length"])
         .range(["green", "blue"])
 
-    // Axes
-    const g = chart.append('g')
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     // Y Axis
     g.append('g').call(d3.axisLeft(y))
@@ -149,98 +152,41 @@ function groupedBarChart(svg_name, data, x_field) {
         })
         .attr("length", 0)
         .attr("fill", function (d) { return color(d.value1); })
+        .style("stroke", "black")
         .on("mouseover", onMouseOver)
         .on("mousemove", onMouseMove)
         .on("mouseleave", onMouseOut)
-        .on("click", onClick)
+        .on("click", onClick);
+
+    let tooltip = d3.select(svg_name)
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px");
 
     function onMouseOver(d, i) {
-        d3.select(this).style("opacity", "0.85");
+        d3.select(this).style("opacity", "0.80");
 
-        g.append("text")
-            .attr('class', 'val')
-            .html("Average Value: " + d.value)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 65;
-            })
-
-        g.append("text")
-            .attr('class', 'val1')
-            .html("Maximum Value: " + d.max)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 85;
-            })
-
-        g.append("text")
-            .attr('class', 'val2')
-            .html("Minimum Value: " + d.min)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 105;
-            })
-
+        tooltip
+        .html("Maximum Value: " + d.max + "<br>" + "Average Value: " + d.value + "<br>" + "Minimum Value: " + d.min)
+        .style("opacity", 1)
+        .style("color", "blue")
     }
 
     function onMouseMove(d, i) {
-        d3.select(this).style("opacity", "0.85");
-        g.selectAll('.val')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 65;
-            })
-
-        g.selectAll('.val1')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 85;
-            })
-
-        g.selectAll('.val2')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 105;
-            })
+        tooltip
+        .style("left", (d3.event.pageX + 15) + "px")
+        .style("top", (d3.event.pageY - 15) + "px")
     }
 
     function onMouseOut(d, i) {
-        d3.select(this).attr("opacity", "1");
-
-        d3.selectAll('.val').remove();
-        d3.selectAll('.val1').remove();
-        d3.selectAll('.val2').remove();
-        d3.selectAll(".box").remove();
+        d3.select(this).style("opacity", "1");
+		tooltip
+			.style("opacity", 0)
     }
 
     function onClick(d, i) {
@@ -281,13 +227,19 @@ function zoomGraph(svg_name, data, x_field, zoomSpecies) {
     let svg = d3.select(svg_name);
     svg.selectAll("*").remove();
 
-    // General Variables
+    // General variables
     const margin = { top: 50, right: 20, left: 60, bottom: 55 };
+    let chart_width = 900;
+    let chart_height = 500;
     let chart = d3.select(svg_name).append("svg")
-    let chart_width = $(svg_name).width();
-    let chart_height = $(svg_name).height();
+        .attr("width", chart_width)
+        .attr("height", chart_height);
     const innerWidth = chart_width - margin.left - margin.right;
     const innerHeight = chart_height - margin.top - margin.bottom;
+
+    // Axes
+    const g = chart.append('g')
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
     // To get average petal lengths and widths
     function avglengths(data, species) {
@@ -383,10 +335,6 @@ function zoomGraph(svg_name, data, x_field, zoomSpecies) {
         .domain(["Petal_width", "Petal_length"])
         .range(["green", "blue"])
 
-    // Axes
-    const g = chart.append('g')
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
     // Y Axis
     g.append('g').call(d3.axisLeft(y))
         .append('text')
@@ -446,94 +394,37 @@ function zoomGraph(svg_name, data, x_field, zoomSpecies) {
         .on("mouseleave", onMouseOut)
         .on("click", onClick)
 
+        let tooltip = d3.select(svg_name)
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px");
+
     function onMouseOver(d, i) {
-        d3.select(this).style("opacity", "0.85");
+        d3.select(this).style("opacity", "0.80");
 
-        g.append("text")
-            .attr('class', 'val')
-            .html("Average Value: " + d.value)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 65;
-            })
-
-        g.append("text")
-            .attr('class', 'val1')
-            .html("Maximum Value: " + d.max)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 85;
-            })
-
-        g.append("text")
-            .attr('class', 'val2')
-            .html("Minimum Value: " + d.min)
-            .style("font-size", "15px")
-            .attr("alignment-baseline", "middle")
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 105;
-            })
-
+        tooltip
+        .html("Maximum Value: " + d.max + "<br>" + "Average Value: " + d.value + "<br>" + "Minimum Value: " + d.min)
+        .style("opacity", 1)
+        .style("color", "blue")
     }
 
     function onMouseMove(d, i) {
-        d3.select(this).style("opacity", "0.85");
-        g.selectAll('.val')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 65;
-            })
-
-        g.selectAll('.val1')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 85;
-            })
-
-        g.selectAll('.val2')
-            .attr('x', function () {
-                //return d3.mouse(this)[0] + 10;
-                return 80;
-            })
-            .attr('y', function () {
-                //return d3.mouse(this)[1] - 5;
-                return 105;
-            })
+        tooltip
+        .style("left", (d3.event.pageX + 15) + "px")
+        .style("top", (d3.event.pageY - 15) + "px")
     }
 
     function onMouseOut(d, i) {
-        d3.select(this).attr("opacity", "1");
-
-        d3.selectAll('.val').remove();
-        d3.selectAll('.val1').remove();
-        d3.selectAll('.val2').remove();
-        d3.selectAll(".box").remove();
+        d3.select(this).style("opacity", "1");
+		tooltip
+			.style("opacity", 0)
     }
+
 
     function onClick(d, i) {
         groupedBarChart(svg_name, data, x_field);

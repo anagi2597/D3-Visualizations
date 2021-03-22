@@ -64,7 +64,8 @@
     <h2>Ayman Nagi</h2>
 
     <h3>Visualization 1: Univariate</h3>
-    <div><svg id="vis_1" name="vis_1" class="default_svg"></svg></div>
+    <div id="vis_1" name ="vis_1" class="default_svg"> 
+    </div>
     <div>
         <p>This visualization shows, out of all the data, how many speicies of Iris are included and how many of each species are included.</p>
         <p>This graph encodes the count of each species included in the famous Iris dataset.
@@ -75,16 +76,24 @@
     <h3>Visualization 2: Bivariate</h3>
     <button id="all" onClick="xAxis = 'Sepal_length';
                               yAxis = 'Sepal_width';
-                              vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);">All</button>
+                              vis_2 = scatterPlot('#vis_2', data, xAxis, yAxis);
+                              xAxis = 'Species';
+                              vis_3 = groupedBarChart('#vis_3', data, xAxis);">All</button>
     <button id="versicolor" onClick="xAxis = 'Sepal_length';
                                     yAxis = 'Sepal_width';
-                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-versicolor');">Iris-versicolor</button>
+                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-versicolor');
+                                    xAxis = 'Species';
+                                    vis_3 = zoomGraph('#vis_3', data, xAxis, 'Iris-versicolor');">Iris-versicolor</button>
     <button id="virginica" onClick="xAxis = 'Sepal_length';
                                     yAxis = 'Sepal_width';
-                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-virginica');">Iris-virginica</button>
+                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-virginica');
+                                    xAxis = 'Species';
+                                    vis_3 = zoomGraph('#vis_3', data, xAxis, 'Iris-virginica');">Iris-virginica</button>
     <button id="setosa" onClick="xAxis = 'Sepal_length';
                                     yAxis = 'Sepal_width';
-                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-setosa');">Iris-setosa </button>
+                                    vis_2 = scatterFlower('#vis_2',data, xAxis, yAxis, 'Iris-setosa');
+                                    xAxis = 'Species';
+                                    vis_3 = zoomGraph('#vis_3', data, xAxis, 'Iris-setosa');">Iris-setosa </button>
     <div><svg id="vis_2" name="vis_2" class="default_svg"></svg></div>
     
     <div>
@@ -96,7 +105,8 @@
     </div>
 
     <h3>Visualization 3: Easy Multivariate Visualizations</h3>
-    <div><svg id="vis_3" name="vis_3" class="default_svg"></svg></div>
+    <div id="vis_3" name ="vis_3" class="default_svg"> 
+    </div>
     <div>
         <p>This visual aims to show if specific Iris species have major differences in petal lengths and widths. 
         This graph makes it easy to visualize the size difference between each of the three Iris species. </p>

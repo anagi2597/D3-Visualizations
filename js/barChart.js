@@ -9,13 +9,19 @@ function irisStackedBarChart(svg_name, data, x_field) {
 	var svg = d3.select(svg_name);
 	svg.selectAll("*").remove();
 
-	// General letiables
+	// General variables
 	const margin = { top: 50, right: 20, left: 60, bottom: 55 };
+	let chart_width = 900;
+	let chart_height = 500;
 	let chart = d3.select(svg_name).append("svg")
-	let chart_width = $(svg_name).width();
-	let chart_height = $(svg_name).height();
+		.attr("width", chart_width)
+		.attr("height", chart_height);
 	const innerWidth = chart_width - margin.left - margin.right;
 	const innerHeight = chart_height - margin.top - margin.bottom;
+
+	// Axes
+	const g = chart.append('g')
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 	// To get average petal lengths and widths
 	function avglengths(data, species) {
@@ -75,10 +81,6 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.domain(subGroup.domain())
 		.range(["green", "blue"])
 
-	// Axes
-	const g = chart.append('g')
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-
 	// Y Axis
 	g.append('g').call(d3.axisLeft(y))
 		.append('text')
@@ -97,7 +99,7 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.call(d3.axisBottom(x))
 		.append('text')
 		.attr('class', 'axis-label')
-		.attr('y', 50)
+		.attr('y', 40)
 		.attr('x', innerWidth / 2)
 		.attr('fill', 'black')
 		.text(x_field)
@@ -113,55 +115,46 @@ function irisStackedBarChart(svg_name, data, x_field) {
 		.selectAll("rect")
 		.data(function (d) { return d; })
 		.enter().append("rect")
-		.attr("stroke-width", 20)
 		.attr("x", function (d) { return x(d.data["Species"]); })
 		.attr("y", function (d) { return y(d[1]); })
 		.attr("height", function (d) { return y(d[0]) - y(d[1]); })
 		.attr("width", x.bandwidth())
+		.style("stroke", "black")
 		.on("mouseover", onMouseOver)
-		//.on("mousemove", onMouseMove)
+		.on("mousemove", onMouseMove)
 		.on("mouseleave", onMouseOut);
 
+	let tooltip = d3.select(svg_name)
+		.append("div")
+		.style("opacity", 0)
+		.attr("class", "tooltip")
+		.style("background-color", "white")
+		.style("border", "solid")
+		.style("border-width", "1px")
+		.style("border-radius", "5px")
+		.style("padding", "10px");
+
 	function onMouseOver(d, i) {
-		//d3.select(this).style("opacity", "0.85");
-		g.append("text")
-			.attr('class', 'val')
-			.html(function () {
-				let value = d[1] - d[0];
-				value = value.toFixed(2);
-				value = value.toString();
-				return ['$' + value];
-			})
-			.attr('x', function () {
-				return x(d.data["Species"]) - 10;
-			})
-			.attr('y', function () {
-				return y(d[1]) - 15;
-			})
+		d3.select(this).style("opacity", "0.80");
+
+		let val = d[1] - d[0];
+		val = val.toFixed(2);
+		tooltip
+			.html("Value: " + val)
+			.style("opacity", 1)
+			.style("color", "black");
 	}
 
-	// function onMouseMove(d, i) {
-	// 	g.append("text")
-	// 		.attr('class', 'val')
-	// 		.html(function () {
-	// 			let value = d[1] - d[0];
-	// 			value = value.toFixed(2);
-	// 			value = value.toString();
-	// 			return ['$' + value];
-	// 		})
-	// 		.attr('x', function() {
-	// 			return x(d.data["Species"]) -10;
-	// 		})
-	// 		.attr('y', function() {
-	// 			return y(d[1]) - 15;
-	// 		})
-	// 		.moveToFront()
-	//   }
+	function onMouseMove(d, i) {
+		tooltip
+			.style("left", (d3.event.pageX + 15) + "px")
+			.style("top", (d3.event.pageY - 15) + "px")
+	}
 
 	function onMouseOut(d, i) {
-		//d3.select(this).style("opacity", "1");
-		d3.selectAll('.val')
-			.remove()
+		d3.select(this).style("opacity", "1");
+		tooltip
+			.style("opacity", 0)
 	}
 
 	// Add title
@@ -330,7 +323,6 @@ function titanicBarChart(svg_name, data, x_field) {
 		points: points
 	}
 }
-
 
 function zoomTitanicBarChart(svg_name, data, x_field, stop) {
 	var svg = d3.select(svg_name);
